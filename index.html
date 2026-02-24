@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HKIT ApL：AI 商業數據分析指揮中心</title>
+    <style>
+        /* ========== CSS 變數系統 ========== */
+        :root {
+            /* 主色系 */
+            --bg-primary: #f8f9fa;
+            --bg-card: #ffffff;
+            --text-primary: #1a202c;
+            --text-secondary: #4a5568;
+            --text-muted: #718096;
+
+            /* 強調色 */
+            --accent-primary: #3b82f6;
+            --accent-hover: #2563eb;
+            --accent-success: #10b981;
+
+            /* 邊框和陰影 */
+            --border-color: #e2e8f0;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
+
+            /* 間距 */
+            --spacing-xs: 8px;
+            --spacing-sm: 12px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+        }
+
+        /* ========== 全局樣式 ========== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', 'PingFang TC', 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ========== Header 樣式 ========== */
+        header {
+            background: var(--bg-card);
+            border-bottom: 2px solid var(--border-color);
+            padding: var(--spacing-xl) var(--spacing-lg);
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        /* ========== 主容器 ========== */
+        main {
+            flex: 1;
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+            padding: var(--spacing-xl) var(--spacing-lg);
+        }
+
+        /* ========== 模組網格布局 ========== */
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        /* ========== 模組卡片樣式 ========== */
+        .module-card {
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: visible;
+        }
+
+        .module-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--accent-primary);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+
+        .module-card:hover {
+            box-shadow: var(--shadow-lg);
+            border-color: var(--accent-primary);
+            transform: translateY(-4px);
+        }
+
+        .module-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .module-card:active {
+            transform: translateY(-2px) scale(0.98);
+        }
+
+        /* 模組編號標籤 */
+        .module-number {
+            display: inline-block;
+            background: var(--accent-primary);
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 12px;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        /* 模組標題 */
+        .module-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: var(--spacing-sm);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .module-emoji {
+            font-size: 1.8rem;
+        }
+
+        /* 模組描述 */
+        .module-description {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            margin-bottom: var(--spacing-md);
+            line-height: 1.5;
+        }
+
+        /* Prompt 展開區域 */
+        .prompt-container {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, opacity 0.3s ease, margin 0.3s ease;
+            opacity: 0;
+            margin-bottom: 0;
+        }
+
+        .prompt-container.expanded {
+            max-height: 600px;
+            opacity: 1;
+            margin-bottom: var(--spacing-md);
+            overflow-y: auto;
+        }
+
+        .prompt-content {
+            background: var(--bg-primary);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: var(--spacing-md);
+            font-family: 'Consolas', 'Monaco', 'Microsoft YaHei', monospace;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: var(--text-primary);
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        /* 查看指令按鈕 */
+        .toggle-button {
+            background: transparent;
+            color: var(--accent-primary);
+            border: 2px solid var(--accent-primary);
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .toggle-button:hover {
+            background: var(--accent-primary);
+            color: white;
+        }
+
+        /* 複製按鈕 */
+        .copy-button {
+            background: var(--accent-primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .copy-button:hover {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+        }
+
+        .copy-button:active {
+            transform: translateY(0);
+        }
+
+        /* ========== Toast 通知 ========== */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--accent-success);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 8px;
+            box-shadow: var(--shadow-lg);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transform: translateX(400px);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast-icon {
+            font-size: 1.5rem;
+        }
+
+        /* ========== 手動複製模態視窗 ========== */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: var(--spacing-xl);
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+            border: 2px solid var(--accent-primary);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .modal-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .modal-instruction {
+            color: var(--text-secondary);
+            margin-bottom: var(--spacing-md);
+            line-height: 1.5;
+        }
+
+        .modal-textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: var(--spacing-md);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            resize: vertical;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .modal-textarea:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+
+        .modal-button {
+            flex: 1;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .modal-button-primary {
+            background: var(--accent-primary);
+            color: white;
+        }
+
+        .modal-button-primary:hover {
+            background: var(--accent-hover);
+        }
+
+        .modal-button-secondary {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
+        }
+
+        .modal-button-secondary:hover {
+            background: var(--border-color);
+        }
+
+        /* ========== Footer 樣式 ========== */
+        footer {
+            background: var(--bg-card);
+            border-top: 2px solid var(--border-color);
+            padding: var(--spacing-lg);
+            text-align: center;
+            box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .usage-tip {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .keyboard-shortcut {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-sm);
+        }
+
+        .key {
+            background: var(--bg-primary);
+            border: 2px solid var(--border-color);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* ========== 響應式設計 ========== */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+            }
+
+            .modules-grid {
+                grid-template-columns: 1fr;
+                gap: var(--spacing-md);
+            }
+
+            .toast {
+                left: 10px;
+                right: 10px;
+                transform: translateY(-100px);
+            }
+
+            .toast.show {
+                transform: translateY(0);
+            }
+
+            .modal-content {
+                width: 95%;
+                padding: var(--spacing-lg);
+            }
+
+            .keyboard-shortcut {
+                flex-direction: column;
+            }
+        }
+
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .modules-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 1025px) {
+            .modules-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header>
+        <h1>HKIT ApL：AI 商業數據分析指揮中心</h1>
+        <p class="subtitle">一鍵複製專業分析指令</p>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <div class="modules-grid" id="modulesGrid">
+            <!-- 模組將由 JavaScript 動態生成 -->
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="usage-tip">
+            💡 使用說明：點擊「查看完整指令」可預覽內容，點擊「複製分析指令」即可複製，然後貼入 ChatGPT 或 Gemini 並上傳數據檔案
+        </div>
+        <div class="keyboard-shortcut">
+            <span>⌨️ 快捷鍵：按</span>
+            <kbd class="key">1</kbd>
+            <kbd class="key">2</kbd>
+            <kbd class="key">3</kbd>
+            <kbd class="key">4</kbd>
+            <kbd class="key">5</kbd>
+            <kbd class="key">6</kbd>
+            <span>快速複製對應模組指令</span>
+        </div>
+    </footer>
+
+    <!-- Toast 通知 -->
+    <div id="toast" class="toast">
+        <span class="toast-icon">✓</span>
+        <span id="toastMessage">已複製！請貼入 AI 視窗</span>
+    </div>
+
+    <!-- 手動複製模態視窗 -->
+    <div id="modalOverlay" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span style="font-size: 1.5rem;">⚠️</span>
+                <h2 class="modal-title">請手動複製以下內容</h2>
+            </div>
+            <p class="modal-instruction">
+                自動複製功能無法使用。請按 <strong>Ctrl+C</strong> (Windows) 或 <strong>⌘+C</strong> (Mac) 來複製下方選取的文字：
+            </p>
+            <textarea id="modalTextarea" class="modal-textarea" readonly></textarea>
+            <div class="modal-buttons">
+                <button class="modal-button modal-button-primary" onclick="closeModal()">我已複製</button>
+                <button class="modal-button modal-button-secondary" onclick="closeModal()">關閉</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== 五大模組數據 ==========
+        const modules = [{
+                id: 1,
+                number: 'MODULE 01',
+                emoji: '🔍',
+                title: '數據體檢',
+                description: '排除數據錯誤與雜訊，確保生意分析準確可靠',
+                prompt: `請讀取上傳的 CSV 數據。作為數據審計師，檢查『銷量』與『氣溫_攝氏』欄位是否存在異常值（如極端錯誤數字），列出問題行數並建議修正方法。
+
+具體檢查項目：
+1. 是否有空值或缺失數據
+2. 數值範圍是否合理（例如：銷量是否為負數，氣溫是否超出常理）
+3. 是否有重複的記錄
+4. 數據類型是否一致
+
+請以表格形式列出發現的問題，並提供具體的修正建議。`
+            },
+            {
+                id: 2,
+                number: 'MODULE 02',
+                emoji: '📊',
+                title: '規律挖掘',
+                description: '發現天氣與時間如何影響生意，找出賺錢的隱藏規律',
+                prompt: `【第一步：執行摘要】
+請先用一句話總結最重要的商業發現，格式如下：
+「[產品名稱]與氣溫呈[正/負]相關，氣溫每變動1度，銷量約變動X杯，建議[具體行動]」
+
+範例：「冰咖啡與氣溫呈正相關，氣溫每升1度，銷量增加5杯，建議夏季提前增加20%凍飲庫存」
+
+【第二步：相關性分析】
+請計算『氣溫_攝氏』與各產品『銷量』之間的相關係數：
+1. 計算每個產品與氣溫的皮爾遜相關係數
+2. 識別正相關（天氣越熱賣越好）和負相關（天氣越冷賣越好）的產品
+3. 用清晰的表格展示所有產品的相關係數及強度評級（強/中/弱）
+
+【第三步：商業洞察】
+針對相關性最強的前3個產品，提供以下分析：
+1. 量化影響：氣溫每變動1度，銷量變動多少杯
+2. 實際意義：用商業語言解釋這個規律
+3. 行動建議：基於此規律提供至少1個具體的進貨或促銷策略
+
+【第四步：視覺化】
+用圖表展示氣溫與銷量的關係（散點圖+趨勢線）`
+            },
+            {
+                id: 3,
+                number: 'MODULE 03',
+                emoji: '🎯',
+                title: '銷量預測',
+                description: '科學預知未來產品銷量，幫你精準決定進貨量',
+                prompt: `【第一步：執行摘要】
+請先用一句話總結預測結果和建議，格式如下：
+「預測[情境描述]時咖啡需求為X杯（範圍Y-Z杯），建議進貨[具體建議]」
+
+範例：「預測18°C考試週咖啡需求為120杯（110-130杯範圍），建議保守進貨115杯避免浪費，並準備20杯應急庫存」
+
+【第二步：建立預測模型】
+請執行線性回歸分析，以『氣溫_攝氏』和『是否考試週』為變量，預測『咖啡』的銷量：
+1. 建立多元線性回歸模型
+2. 提供完整的預測公式（例如：銷量 = a × 氣溫 + b × 考試週 + c）
+3. 計算模型的 R² 值並評估模型可靠性（>0.7 為良好）
+
+【第三步：情境預測】
+使用模型進行以下預測：
+- 情境：氣溫18°C + 考試週
+- 點估計：預期銷量 = ? 杯
+- 95%信賴區間：範圍 = ? ~ ? 杯
+- 可靠性說明：解釋信賴區間的意義
+
+【第四步：進貨決策建議】
+基於預測結果，提供具體的進貨策略：
+1. 保守方案：進貨量 = [下限] 杯（理由：避免浪費）
+2. 積極方案：進貨量 = [上限] 杯（理由：把握銷售機會）
+3. 推薦方案：考慮成本與機會成本的平衡建議
+
+【第五步：模型驗證】
+附上殘差分析圖，確保預測可靠性`
+            },
+            {
+                id: 4,
+                number: 'MODULE 04',
+                emoji: '📈',
+                title: '專業圖表',
+                description: '將枯燥數據轉成專業圖表，讓商業表現一眼看清',
+                prompt: `請為我繪製兩張專業圖表：
+1. 考試週與非考試週的產品銷量對比柱狀圖
+2. 氣溫與凍飲銷量的趨勢分析圖
+
+圖表要求具備商業簡報水準，包括：
+- 清晰的標題和軸標籤
+- 適當的顏色區分（使用專業配色）
+- 數值標註（在柱狀圖上顯示具體數字）
+- 圖例說明
+- 趨勢線（在第二張圖中）
+
+請使用 Python (matplotlib 或 seaborn) 或直接生成視覺化圖表。`
+            },
+            {
+                id: 6,
+                number: 'MODULE 06',
+                emoji: '📋',
+                title: '整合商業報告',
+                description: '將數據分析綜合成高管級別的商業報告，支持決策制定',
+                prompt: `【重要前提】
+本報告需要基於前面已完成的分析結果：
+- 模組1：數據體檢結果（數據質量、異常值）
+- 模組2：規律挖掘結果（相關性分析、商業洞察）
+- 模組3：銷量預測結果（回歸模型、預測值、進貨建議）
+- 模組4：專業圖表結果（視覺化圖表）
+
+如果你尚未完成上述分析，請先依序執行模組1-4，再使用本指令。
+
+---
+
+【第一步：執行摘要】
+請先用 3-5 句話總結最關鍵的商業發現和建議：
+
+範例格式：
+「基於過去X個月的銷售數據分析，我們發現：（1）氣溫是影響凍飲銷量的主要因素，相關性達0.85；（2）考試週咖啡需求平均增加30%；（3）當前數據質量良好，僅2%異常值。建議：夏季提前增加20%凍飲庫存，考試週期間保守進貨15%避免浪費，並建立氣溫預警系統優化進貨決策。」
+
+---
+
+【第二步：商業報告正文】
+
+請生成以下結構的完整報告：
+
+## 一、數據基礎評估
+- **數據質量概況**：總結模組1的發現（異常值比例、缺失數據、可靠性評級）
+- **數據時間範圍**：說明分析覆蓋的時間段和樣本量
+- **置信度說明**：基於數據質量，評估後續分析的可信程度
+
+## 二、核心商業洞察
+整合模組2的規律挖掘結果：
+- **關鍵影響因素**：列出影響銷量的Top 3因素（如氣溫、考試週、節日等）
+- **量化影響**：每個因素對銷量的具體影響（如「氣溫每升1度，冰咖啡銷量增加X杯」）
+- **產品分類洞察**：
+  - 熱敏產品（受氣溫影響大）
+  - 季節性產品（特定時期銷量高）
+  - 穩定產品（不受外部因素影響）
+
+## 三、未來趨勢預測
+整合模組3的銷量預測結果：
+- **預測模型可靠性**：R² 值解讀（>0.7 為良好，0.5-0.7 為中等，<0.5 需謹慎）
+- **關鍵情境預測**：
+  - 情境A：高溫 + 考試週 → 預測銷量範圍
+  - 情境B：低溫 + 非考試週 → 預測銷量範圍
+  - 情境C：常溫 + 考試週 → 預測銷量範圍
+- **預測區間說明**：解釋95%信賴區間的商業意義
+
+## 四、圖表洞察解讀
+參考模組4的專業圖表，提供專業解讀：
+- **圖表1解讀**：考試週vs非考試週對比圖的關鍵發現
+- **圖表2解讀**：氣溫趨勢圖的模式識別
+- **視覺化價值**：圖表中最值得關注的3個數據點
+
+## 五、戰略行動建議
+基於全面分析，提供具體的執行方案：
+
+### 5.1 進貨策略優化
+- **短期行動**（未來1-2週）：根據天氣預報調整進貨
+- **中期規劃**（未來1-3個月）：根據季節趨勢制定庫存計劃
+- **長期策略**（未來半年）：建立數據驅動的自動補貨系統
+
+### 5.2 產品組合調整
+- **熱敏產品管理**：夏季增加凍飲品項，冬季增加熱飲品項
+- **考試週專案**：提前2週啟動咖啡促銷和庫存準備
+- **穩定產品保障**：確保基礎產品的持續供應
+
+### 5.3 風險管理
+- **過量風險**：根據信賴區間下限設定保守進貨量
+- **缺貨風險**：準備應急庫存應對預測偏差
+- **數據風險**：持續監控預測準確性，每月更新模型
+
+## 六、效益預估
+量化預期改善效果：
+- **減少浪費**：預計降低過期損失 X%
+- **提升銷售**：預計增加銷售額 Y%（減少缺貨機會損失）
+- **優化成本**：預計降低庫存成本 Z%
+
+## 七、下一步行動
+明確的執行時間表：
+1. **本週**：[具體行動1]
+2. **本月**：[具體行動2]
+3. **下季度**：[具體行動3]
+
+---
+
+【第三步：附錄 - 分析方法說明】
+簡要說明使用的統計方法（供技術背景讀者參考）：
+- 相關性分析：皮爾遜相關係數
+- 預測模型：多元線性回歸
+- 置信度：95% 信賴區間
+
+---
+
+【輸出格式要求】
+1. 使用 Markdown 格式，便於導出為 PDF 或 PowerPoint
+2. 用表格展示量化數據（如影響因素對比表）
+3. 用加粗強調關鍵數字和建議
+4. 語言專業但易懂，避免過度技術化
+5. 每個章節控制在 200-300 字，確保報告簡潔有力
+
+【目標讀者】
+假設讀者是：企業高管、投資者、或有商業決策權但無技術背景的管理層。`
+            },
+            {
+                id: 5,
+                number: 'MODULE 05',
+                emoji: '💼',
+                title: '職涯說服',
+                description: '學會用數據說服老闆決策，鎖定未來的 AI 高薪職位',
+                prompt: `基於剛才的分析結果，請為我寫一份給投資者的 1 分鐘數據簡報劇本。
+
+簡報內容應包括：
+1. 核心發現（3個最重要的數據洞察）
+2. 商業影響（這些發現如何影響營收）
+3. 具體建議（可執行的行動方案）
+4. 預期效益（量化的改善目標）
+
+最後，請列出具備此項數據處理能力的學生，在 2026 年對應的 3 個熱門高薪職位及起薪點。職位應包括：
+- 職位名稱
+- 香港市場平均起薪（港幣/月）
+- 核心技能要求
+- 職涯發展路徑
+
+請用專業但易懂的語言撰寫，適合向非技術背景的投資者說明。`
+            }
+        ];
+
+        // ========== 渲染模組卡片 ==========
+        function renderModules() {
+            const grid = document.getElementById('modulesGrid');
+            grid.innerHTML = modules.map(module => `
+                <div class="module-card">
+                    <div class="module-number">${module.number}</div>
+                    <h2 class="module-title">
+                        <span class="module-emoji">${module.emoji}</span>
+                        <span>${module.title}</span>
+                    </h2>
+                    <p class="module-description">${module.description}</p>
+
+                    <!-- 查看完整指令按鈕 -->
+                    <button class="toggle-button" onclick="togglePrompt(${module.id})" id="toggle-btn-${module.id}">
+                        👁️ 查看完整指令 ▼
+                    </button>
+
+                    <!-- Prompt 展開區域 -->
+                    <div class="prompt-container" id="prompt-${module.id}">
+                        <div class="prompt-content">${escapeHtml(module.prompt)}</div>
+                    </div>
+
+                    <!-- 複製按鈕 -->
+                    <button class="copy-button" onclick="handleModuleClick(${module.id})">
+                        📋 複製分析指令
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        // ========== HTML 轉義函數 ==========
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // ========== 複製功能（三層 Fallback）==========
+        async function copyToClipboard(text) {
+            // 方法1: Modern Clipboard API
+            try {
+                await navigator.clipboard.writeText(text);
+                return true;
+            } catch (err1) {
+                console.log('Clipboard API 失敗，嘗試 fallback 方法');
+
+                // 方法2: Legacy execCommand
+                try {
+                    const success = fallbackCopyExecCommand(text);
+                    if (success) {
+                        return true;
+                    }
+                    throw new Error('execCommand 失敗');
+                } catch (err2) {
+                    console.log('所有自動複製方法失敗，顯示手動複製視窗');
+                    // 方法3: 手動複製模態視窗
+                    showManualCopyModal(text);
+                    return false;
+                }
+            }
+        }
+
+        function fallbackCopyExecCommand(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            textarea.style.top = '0';
+            textarea.style.left = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+
+            let success = false;
+            try {
+                success = document.execCommand('copy');
+            } catch (err) {
+                console.error('execCommand 錯誤:', err);
+            }
+
+            document.body.removeChild(textarea);
+            return success;
+        }
+
+        // ========== 手動複製模態視窗 ==========
+        function showManualCopyModal(text) {
+            const overlay = document.getElementById('modalOverlay');
+            const textarea = document.getElementById('modalTextarea');
+
+            textarea.value = text;
+            overlay.classList.add('show');
+
+            // 延遲選取文字，確保模態視窗已完全顯示
+            setTimeout(() => {
+                textarea.select();
+                textarea.focus();
+            }, 100);
+        }
+
+        function closeModal() {
+            const overlay = document.getElementById('modalOverlay');
+            overlay.classList.remove('show');
+        }
+
+        // 點擊背景關閉模態視窗
+        document.getElementById('modalOverlay').addEventListener('click', function (e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // ========== Toast 通知 ==========
+        function showToast(message = '已複製！請貼入 AI 視窗') {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+
+            toastMessage.textContent = message;
+            toast.classList.add('show');
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // ========== 處理模組點擊 ==========
+        async function handleModuleClick(moduleId) {
+            const module = modules.find(m => m.id === moduleId);
+            if (!module) return;
+
+            const success = await copyToClipboard(module.prompt);
+
+            // 只有在自動複製成功時才顯示 Toast
+            if (success) {
+                showToast(`已複製「${module.title}」指令！`);
+            }
+        }
+
+        // ========== 展開/收起 Prompt ==========
+        function togglePrompt(moduleId) {
+            const promptContainer = document.getElementById(`prompt-${moduleId}`);
+            const toggleButton = document.getElementById(`toggle-btn-${moduleId}`);
+
+            if (!promptContainer || !toggleButton) return;
+
+            const isExpanded = promptContainer.classList.contains('expanded');
+
+            if (isExpanded) {
+                // 收起
+                promptContainer.classList.remove('expanded');
+                toggleButton.innerHTML = '👁️ 查看完整指令 ▼';
+            } else {
+                // 展開
+                promptContainer.classList.add('expanded');
+                toggleButton.innerHTML = '🔼 收起指令 ▲';
+            }
+        }
+
+        // ========== 鍵盤快捷鍵 ==========
+        document.addEventListener('keydown', function (e) {
+            // 只監聽數字鍵 1-6
+            const key = e.key;
+            if (key >= '1' && key <= '6') {
+                const moduleId = parseInt(key);
+                if (moduleId <= modules.length) {
+                    handleModuleClick(moduleId);
+                }
+            }
+        });
+
+        // ========== 初始化 ==========
+        document.addEventListener('DOMContentLoaded', function () {
+            renderModules();
+        });
+    </script>
+</body>
+
+</html>
