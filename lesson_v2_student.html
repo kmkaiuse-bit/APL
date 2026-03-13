@@ -22,6 +22,7 @@
             --c2: #0ea5e9;
             --c3: #10b981;
             --c4: #ef4444;
+            --c5: #8b5cf6;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -157,6 +158,10 @@
         .s4 .step-num { background: var(--c4); color: white; }
         .s4 .step-label { color: var(--c4); }
 
+        .s5 { background: #f5f3ff; border-color: var(--c5); }
+        .s5 .step-num { background: var(--c5); color: white; }
+        .s5 .step-label { color: var(--c5); }
+
         /* ===== Main ===== */
         main {
             max-width: 820px;
@@ -185,6 +190,7 @@
         .task-card.c2 { border-color: #bae6fd; }
         .task-card.c3 { border-color: #bbf7d0; }
         .task-card.c4 { border-color: #fecaca; }
+        .task-card.c5 { border-color: #ddd6fe; }
 
         /* 卡片頂欄 */
         .card-top {
@@ -198,6 +204,7 @@
         .ct2 { background: linear-gradient(135deg, #0ea5e9, #38bdf8); }
         .ct3 { background: linear-gradient(135deg, #10b981, #34d399); }
         .ct4 { background: linear-gradient(135deg, #ef4444, #f87171); }
+        .ct5 { background: linear-gradient(135deg, #8b5cf6, #a78bfa); }
 
         .task-num-badge {
             background: rgba(255,255,255,0.25);
@@ -277,6 +284,7 @@
         .db-t2 { background: #f0f9ff; color: #0369a1; }
         .db-t3 { background: #f0fdf4; color: #166534; }
         .db-t4 { background: #fff1f2; color: #991b1b; }
+        .db-t5 { background: #f5f3ff; color: #5b21b6; }
 
         /* 評論列表 */
         .reviews {
@@ -485,6 +493,7 @@
         .bc2 { background: var(--c2); }
         .bc3 { background: var(--c3); }
         .bc4 { background: var(--c4); }
+        .bc5 { background: var(--c5); }
 
         /* ===== 學習點 ===== */
         .tip {
@@ -690,6 +699,10 @@
     <a class="step-pill s4" href="#task4">
         <span class="step-num">4</span>
         <span class="step-label">我的 JUPAS 分析</span>
+    </a>
+    <a class="step-pill s5" href="#task5">
+        <span class="step-num">5</span>
+        <span class="step-label">Dreamina 設計落地</span>
     </a>
 </nav>
 
@@ -1106,6 +1119,93 @@
         </div>
     </article>
 
+    <!-- ===== 任務 5 ===== -->
+    <article class="task-card c5" id="task5">
+        <div class="card-top ct5">
+            <div class="task-num-badge">任務 5</div>
+            <div class="card-top-title">數據驅動設計：用 Dreamina 將策略「落地」</div>
+            <div class="card-top-concept">AI 圖像生成</div>
+        </div>
+        <div class="card-body">
+
+            <div class="task-brief">
+                <div class="task-brief-icon">🎨</div>
+                <div class="task-brief-text">
+                    <strong>核心金句：好的數據分析師，不只要解決問題，還要懂得「推銷」解決方案。</strong><br>
+                    根據任務 2 嘅發現——「出單慢」導致客流損失、「珍珠奶茶」最受歡迎——<br>
+                    而家用 Dreamina 製作一張宣傳海報，將你嘅數據洞察變成視覺語言。
+                </div>
+            </div>
+
+            <!-- 任務背景 -->
+            <div class="data-block">
+                <div class="data-block-title db-t5">🔗 Connecting the Dots — 任務背景</div>
+                <div style="background: white; padding: 14px 16px; display: flex; flex-direction: column; gap: 10px;">
+                    <div style="display: flex; gap: 10px; align-items: flex-start; font-size: 0.88rem; color: var(--sub);">
+                        <span style="background: #ede9fe; color: #5b21b6; font-size: 0.72rem; font-weight: 700; padding: 2px 10px; border-radius: 10px; flex-shrink: 0; margin-top: 2px;">數據來源</span>
+                        <span>任務 2 發現：「出單慢」（平均 35–45 分鐘）導致客人流失；「珍珠奶茶」係評論中最受歡迎嘅產品。</span>
+                    </div>
+                    <div style="display: flex; gap: 10px; align-items: flex-start; font-size: 0.88rem; color: var(--sub);">
+                        <span style="background: #ede9fe; color: #5b21b6; font-size: 0.72rem; font-weight: 700; padding: 2px 10px; border-radius: 10px; flex-shrink: 0; margin-top: 2px;">設計目標</span>
+                        <span>製作一張「網上預約免排隊」或「爆款新品推廣」海報，解決生意差距（Gap），將策略視覺化呈現。</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 方向選擇 -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div style="background: #fef3c7; border: 2px solid #fde68a; border-radius: 10px; padding: 12px 14px; text-align: center;">
+                    <div style="font-size: 1.4rem; margin-bottom: 6px;">🧋</div>
+                    <div style="font-size: 0.78rem; font-weight: 800; color: #92400e; text-transform: uppercase; letter-spacing: 0.5px;">方向 A</div>
+                    <div style="font-size: 0.85rem; font-weight: 700; color: #78350f; margin-top: 3px;">商業促銷海報</div>
+                    <div style="font-size: 0.78rem; color: #92400e; margin-top: 4px;">針對奶茶鋪老闆</div>
+                </div>
+                <div style="background: #ede9fe; border: 2px solid #ddd6fe; border-radius: 10px; padding: 12px 14px; text-align: center;">
+                    <div style="font-size: 1.4rem; margin-bottom: 6px;">🌆</div>
+                    <div style="font-size: 0.78rem; font-weight: 800; color: #5b21b6; text-transform: uppercase; letter-spacing: 0.5px;">方向 B</div>
+                    <div style="font-size: 0.85rem; font-weight: 700; color: #4c1d95; margin-top: 3px;">生涯願景海報</div>
+                    <div style="font-size: 0.78rem; color: #5b21b6; margin-top: 4px;">針對 JUPAS 目標</div>
+                </div>
+            </div>
+
+            <!-- Prompt A -->
+            <div class="data-block">
+                <div class="data-block-title db-t5">🧋 方向 A Prompt — 商業促銷（直接複製落 Dreamina）</div>
+                <div class="prompt-block" style="border-radius: 0; border: none; border-top: 1px solid var(--border);">
+                    <div class="prompt-code">
+                        <div class="prompt-placeholder" id="ph5a">👇 點擊「查看」預覽完整 Prompt</div>
+                        <div class="prompt-text-el" id="pt5a">一張極簡主義設計嘅奶茶宣傳海報，主角係一杯具有濃厚芝士奶蓋嘅抹茶飲品，杯身有水珠，營造清涼感。背景係現代化、明亮嘅奶茶鋪。上方預留大量白位方便加入文字。風格：寫實攝影、電影感光影、8K 高清。</div>
+                    </div>
+                    <div class="prompt-actions">
+                        <button class="btn-peek" onclick="togglePt('pt5a','ph5a',this)">👁 查看</button>
+                        <button class="btn-copy-main bc5" onclick="doCopy('pt5a','任務 5 方向A Prompt')">📋 複製 Prompt → 貼入 Dreamina</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Prompt B -->
+            <div class="data-block">
+                <div class="data-block-title db-t5">🌆 方向 B Prompt — 生涯願景（直接複製落 Dreamina）</div>
+                <div class="prompt-block" style="border-radius: 0; border: none; border-top: 1px solid var(--border);">
+                    <div class="prompt-code">
+                        <div class="prompt-placeholder" id="ph5b">👇 點擊「查看」預覽完整 Prompt</div>
+                        <div class="prompt-text-el" id="pt5b">一位年輕專業嘅數據分析師，喺充滿未來感嘅辦公室內工作，屏幕顯示複雜嘅數據圖表。窗外係藍色調嘅城市夜景。風格：Cyberpunk 混合寫實、冷色系、高對比度、精緻細節。</div>
+                    </div>
+                    <div class="prompt-actions">
+                        <button class="btn-peek" onclick="togglePt('pt5b','ph5b',this)">👁 查看</button>
+                        <button class="btn-copy-main bc5" onclick="doCopy('pt5b','任務 5 方向B Prompt')">📋 複製 Prompt → 貼入 Dreamina</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tip">
+                <span class="tip-icon">💡</span>
+                <span class="tip-text">數據分析唔係終點——將洞察轉化成別人看得懂嘅視覺呈現，先係真正嘅影響力。今日你用 AI 圖像工具將策略「落地」，就係數據分析師最核心嘅技能之一。</span>
+            </div>
+
+        </div>
+    </article>
+
     <!-- ===== 結語 ===== -->
     <div class="outro-card">
         <h2>今日數據決策循環</h2>
@@ -1119,6 +1219,8 @@
             <span class="flow-arr">→</span>
             <span class="flow-pill">🎯 Gap Analysis</span>
             <span class="flow-arr">→</span>
+            <span class="flow-pill">🎨 Dreamina 設計</span>
+            <span class="flow-arr">→</span>
             <span class="flow-pill" style="background: rgba(251,191,36,0.2); border-color: rgba(251,191,36,0.4); color: #fbbf24;">✅ 更好的決策</span>
         </div>
 
@@ -1129,7 +1231,7 @@
 
         <div class="verify-box">
             <p>課堂結束問題：</p>
-            <div class="verify-q">「Gap Analysis 係咩？我今日用它分析了哪兩個情況？」</div>
+            <div class="verify-q">「Gap Analysis 係咩？我今日用它分析了哪兩個情況？數據洞察點樣透過設計『落地』？」</div>
         </div>
     </div>
 
