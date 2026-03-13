@@ -1,0 +1,1238 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>鵝媽媽奶茶 · 數據分析師任務板</title>
+    <style>
+        :root {
+            --bg: #f0f4f8;
+            --card: #ffffff;
+            --text: #1a202c;
+            --sub: #4a5568;
+            --muted: #94a3b8;
+            --border: #e2e8f0;
+            --shadow: 0 4px 12px rgba(0,0,0,0.08);
+            --shadow-lg: 0 10px 30px rgba(0,0,0,0.12);
+            --r: 14px;
+            --gap: 20px;
+
+            --c1: #6366f1;
+            --c2: #0ea5e9;
+            --c3: #10b981;
+            --c4: #ef4444;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Microsoft YaHei', 'PingFang TC', 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            background: linear-gradient(145deg, #0f172a 0%, #1e293b 60%, #0f4c75 100%);
+            color: white;
+            padding: 40px 20px 32px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(99,102,241,0.2) 0%, transparent 70%);
+            top: -100px; right: -100px;
+            pointer-events: none;
+        }
+
+        .hero-eyebrow {
+            display: inline-block;
+            background: rgba(99,102,241,0.3);
+            border: 1px solid rgba(99,102,241,0.5);
+            color: #a5b4fc;
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 4px 14px;
+            border-radius: 20px;
+            margin-bottom: 14px;
+        }
+
+        .hero h1 {
+            font-size: clamp(1.6rem, 5vw, 2.4rem);
+            font-weight: 900;
+            margin-bottom: 8px;
+            line-height: 1.2;
+        }
+
+        .hero h1 span { color: #fbbf24; }
+
+        .hero-sub {
+            color: rgba(255,255,255,0.65);
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+        }
+
+        .story-pill {
+            display: inline-block;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.18);
+            border-radius: 12px;
+            padding: 14px 22px;
+            max-width: 620px;
+            font-size: 0.92rem;
+            color: rgba(255,255,255,0.85);
+            line-height: 1.75;
+            text-align: left;
+        }
+
+        .story-pill strong { color: #fbbf24; }
+
+        /* ===== 步驟導航 ===== */
+        .steps-nav {
+            background: var(--card);
+            border-bottom: 1px solid var(--border);
+            padding: 14px 16px;
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            scrollbar-width: none;
+        }
+
+        .steps-nav::-webkit-scrollbar { display: none; }
+
+        .step-pill {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 30px;
+            cursor: pointer;
+            white-space: nowrap;
+            text-decoration: none;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .step-pill:hover { transform: translateY(-1px); opacity: 0.9; }
+
+        .step-num {
+            width: 24px; height: 24px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+
+        .step-label { font-size: 0.82rem; font-weight: 700; }
+
+        .s1 { background: #eef2ff; border-color: var(--c1); }
+        .s1 .step-num { background: var(--c1); color: white; }
+        .s1 .step-label { color: var(--c1); }
+
+        .s2 { background: #f0f9ff; border-color: var(--c2); }
+        .s2 .step-num { background: var(--c2); color: white; }
+        .s2 .step-label { color: var(--c2); }
+
+        .s3 { background: #f0fdf4; border-color: var(--c3); }
+        .s3 .step-num { background: var(--c3); color: white; }
+        .s3 .step-label { color: var(--c3); }
+
+        .s4 { background: #fff1f2; border-color: var(--c4); }
+        .s4 .step-num { background: var(--c4); color: white; }
+        .s4 .step-label { color: var(--c4); }
+
+        /* ===== Main ===== */
+        main {
+            max-width: 820px;
+            margin: 0 auto;
+            padding: 28px 16px 60px;
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+        }
+
+        /* ===== 任務卡片 ===== */
+        .task-card {
+            background: var(--card);
+            border-radius: var(--r);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            border: 2px solid transparent;
+            transition: box-shadow 0.25s, border-color 0.25s;
+        }
+
+        .task-card:hover {
+            box-shadow: var(--shadow-lg);
+        }
+
+        .task-card.c1 { border-color: #c7d2fe; }
+        .task-card.c2 { border-color: #bae6fd; }
+        .task-card.c3 { border-color: #bbf7d0; }
+        .task-card.c4 { border-color: #fecaca; }
+
+        /* 卡片頂欄 */
+        .card-top {
+            padding: 16px 22px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .ct1 { background: linear-gradient(135deg, #6366f1, #818cf8); }
+        .ct2 { background: linear-gradient(135deg, #0ea5e9, #38bdf8); }
+        .ct3 { background: linear-gradient(135deg, #10b981, #34d399); }
+        .ct4 { background: linear-gradient(135deg, #ef4444, #f87171); }
+
+        .task-num-badge {
+            background: rgba(255,255,255,0.25);
+            border: 2px solid rgba(255,255,255,0.4);
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 800;
+            padding: 4px 12px;
+            border-radius: 20px;
+            white-space: nowrap;
+        }
+
+        .card-top-title {
+            flex: 1;
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: white;
+        }
+
+        .card-top-concept {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 3px 12px;
+            border-radius: 20px;
+            white-space: nowrap;
+        }
+
+        /* 卡片內容 */
+        .card-body {
+            padding: 22px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        /* 任務說明 */
+        .task-brief {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            background: #f8fafc;
+            border-radius: 10px;
+            padding: 14px 16px;
+        }
+
+        .task-brief-icon { font-size: 1.4rem; flex-shrink: 0; }
+
+        .task-brief-text {
+            font-size: 0.92rem;
+            color: var(--sub);
+            line-height: 1.65;
+        }
+
+        .task-brief-text strong { color: var(--text); }
+
+        /* 數據區塊 */
+        .data-block {
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .data-block-title {
+            padding: 9px 16px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .db-t1 { background: #eef2ff; color: #4338ca; }
+        .db-t2 { background: #f0f9ff; color: #0369a1; }
+        .db-t3 { background: #f0fdf4; color: #166534; }
+        .db-t4 { background: #fff1f2; color: #991b1b; }
+
+        /* 評論列表 */
+        .reviews {
+            background: white;
+            padding: 12px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .review {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            font-size: 0.88rem;
+            line-height: 1.55;
+        }
+
+        .review-n {
+            background: #e0e7ff;
+            color: #3730a3;
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 10px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .review-t { color: var(--sub); }
+
+        /* 數據表格 */
+        .dtable-wrap {
+            background: white;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .dtable {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.83rem;
+            min-width: 520px;
+        }
+
+        .dtable th {
+            background: #166534;
+            color: white;
+            padding: 9px 12px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .dtable th:first-child { text-align: left; }
+
+        .dtable td {
+            padding: 8px 12px;
+            text-align: center;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .dtable td:first-child { text-align: left; font-weight: 600; }
+        .dtable tr:last-child td { border-bottom: none; background: #f0fdf4; font-weight: 700; }
+        .dtable tr:nth-child(even) td { background: #f9fafb; }
+        .dtable tr:last-child td:first-child { background: #f0fdf4; }
+
+        /* 個人數據 */
+        .profile-grid {
+            background: white;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 10px;
+            padding: 14px;
+        }
+
+        .profile-cell {
+            background: #fff1f2;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            padding: 10px 14px;
+        }
+
+        .profile-cell label {
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #991b1b;
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        .profile-cell span {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        /* 對照表 */
+        .compare-wrap {
+            background: white;
+            overflow-x: auto;
+        }
+
+        .ctable {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.86rem;
+            min-width: 360px;
+        }
+
+        .ctable th {
+            padding: 10px 16px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-align: left;
+        }
+
+        .ctable th:first-child { background: #fef3c7; color: #92400e; }
+        .ctable th:last-child { background: #fee2e2; color: #991b1b; }
+
+        .ctable td {
+            padding: 9px 16px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: top;
+        }
+
+        .ctable tr:last-child td { border-bottom: none; }
+        .ctable td:first-child { color: #92400e; font-weight: 600; background: #fffbeb; }
+        .ctable td:last-child { color: #9f1239; background: #fff5f5; }
+
+        /* ===== Prompt 區塊 ===== */
+        .prompt-block {
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid #1e293b;
+        }
+
+        .prompt-code {
+            background: #1e293b;
+            padding: 18px 20px;
+        }
+
+        .prompt-text-el {
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.83rem;
+            line-height: 1.75;
+            color: #e2e8f0;
+            white-space: pre-wrap;
+            word-break: break-word;
+            display: none;
+        }
+
+        .prompt-text-el.open { display: block; }
+
+        .prompt-placeholder {
+            color: #64748b;
+            font-size: 0.85rem;
+            text-align: center;
+            padding: 4px 0;
+        }
+
+        .prompt-actions {
+            background: #0f172a;
+            padding: 10px 16px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-peek {
+            background: transparent;
+            color: #94a3b8;
+            border: 1px solid #334155;
+            padding: 8px 14px;
+            border-radius: 7px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .btn-peek:hover { background: #1e293b; color: white; }
+
+        .btn-copy-main {
+            flex: 1;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 7px;
+            font-size: 0.92rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            color: white;
+        }
+
+        .btn-copy-main:hover { opacity: 0.9; transform: translateY(-1px); }
+        .btn-copy-main:active { transform: translateY(0); }
+
+        .bc1 { background: var(--c1); }
+        .bc2 { background: var(--c2); }
+        .bc3 { background: var(--c3); }
+        .bc4 { background: var(--c4); }
+
+        /* ===== 學習點 ===== */
+        .tip {
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            border-left: 4px solid #f59e0b;
+            border-radius: 0 8px 8px 0;
+            padding: 12px 16px;
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+        }
+
+        .tip-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+        .tip-text { font-size: 0.88rem; color: #78350f; font-weight: 600; line-height: 1.6; }
+
+        /* ===== 結語卡片 ===== */
+        .outro-card {
+            background: linear-gradient(145deg, #0f172a, #1e293b);
+            border-radius: var(--r);
+            padding: 32px 28px;
+            text-align: center;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .outro-card h2 {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+
+        .outro-card h2 span { color: #fbbf24; }
+
+        .flow-mini {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin: 20px 0;
+        }
+
+        .flow-pill {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 6px 14px;
+            border-radius: 20px;
+        }
+
+        .flow-arr { color: rgba(255,255,255,0.4); font-size: 1rem; }
+
+        .verify-box {
+            background: rgba(251,191,36,0.15);
+            border: 1px solid rgba(251,191,36,0.3);
+            border-radius: 10px;
+            padding: 14px 18px;
+            margin-top: 18px;
+        }
+
+        .verify-box p {
+            color: #fde68a;
+            font-size: 0.9rem;
+            font-weight: 600;
+            line-height: 1.6;
+        }
+
+        .verify-q {
+            color: white;
+            font-size: 1rem;
+            font-weight: 800;
+            margin-top: 6px;
+        }
+
+        /* ===== Toast ===== */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #10b981;
+            color: white;
+            padding: 13px 22px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 9999;
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            white-space: nowrap;
+        }
+
+        .toast.show { transform: translateX(-50%) translateY(0); }
+
+        /* ===== Modal ===== */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9000;
+            padding: 16px;
+        }
+
+        .modal-overlay.show { display: flex; }
+
+        .modal-box {
+            background: white;
+            border-radius: 14px;
+            padding: 24px;
+            width: 100%;
+            max-width: 540px;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+
+        .modal-title { font-size: 1.1rem; font-weight: 800; margin-bottom: 12px; }
+
+        .modal-hint {
+            font-size: 0.88rem;
+            color: var(--sub);
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+
+        .modal-ta {
+            width: 100%;
+            min-height: 180px;
+            padding: 12px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 0.82rem;
+            line-height: 1.5;
+            resize: vertical;
+            margin-bottom: 12px;
+        }
+
+        .modal-ta:focus { outline: none; border-color: #6366f1; }
+
+        .modal-btns { display: flex; gap: 10px; }
+
+        .modal-btn {
+            flex: 1;
+            padding: 11px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .modal-btn-ok { background: #6366f1; color: white; }
+        .modal-btn-close { background: #f1f5f9; color: var(--text); border: 2px solid var(--border); }
+
+        /* ===== 響應式 ===== */
+        @media (max-width: 600px) {
+            .hero { padding: 28px 16px 24px; }
+            .card-top-concept { display: none; }
+            .card-top-title { font-size: 1rem; }
+            .profile-grid { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- ===== HERO ===== -->
+<header class="hero">
+    <div class="hero-eyebrow">HKIT ApL · 今日課堂</div>
+    <h1>你係<span>數據分析師</span></h1>
+    <p class="hero-sub">AI 商業數據決策模擬 · 鵝媽媽奶茶</p>
+    <div class="story-pill">
+        你今日受聘為「鵝媽媽奶茶」的 AI 數據分析師。<br>
+        用 AI 幫老闆分析生意數據——<br>
+        最後你會發現，<strong>同一套工具，也可以幫你規劃自己的未來。</strong>
+    </div>
+</header>
+
+<!-- ===== 步驟導航 ===== -->
+<nav class="steps-nav">
+    <a class="step-pill s1" href="#task1">
+        <span class="step-num">1</span>
+        <span class="step-label">銷售分析</span>
+    </a>
+    <a class="step-pill s2" href="#task2">
+        <span class="step-num">2</span>
+        <span class="step-label">顧客畫像</span>
+    </a>
+    <a class="step-pill s3" href="#task3">
+        <span class="step-num">3</span>
+        <span class="step-label">商業差距分析</span>
+    </a>
+    <a class="step-pill s4" href="#task4">
+        <span class="step-num">4</span>
+        <span class="step-label">我的 JUPAS 分析</span>
+    </a>
+</nav>
+
+<main>
+
+    <!-- ===== 任務 1 ===== -->
+    <article class="task-card c1" id="task1">
+        <div class="card-top ct1">
+            <div class="task-num-badge">任務 1</div>
+            <div class="card-top-title">銷售數據分析</div>
+            <div class="card-top-concept">數據 → 決策</div>
+        </div>
+        <div class="card-body">
+
+            <div class="task-brief">
+                <div class="task-brief-icon">📋</div>
+                <div class="task-brief-text">
+                    <strong>你的工作：</strong>以下是鵝媽媽奶茶 9–10 月嘅完整銷售數據。
+                    操作步驟：<strong>① 下載 CSV</strong> → <strong>② 上傳到 AI</strong> → <strong>③ 複製 Prompt 貼入</strong>，讓 AI 分析天氣、考試週對銷量嘅影響，同埋哪款最賺錢。
+                </div>
+            </div>
+
+            <!-- 數據表 -->
+            <div class="data-block">
+                <div class="data-block-title db-t3" style="display:flex; justify-content:space-between; align-items:center;">
+                    <span>📊 銷售數據 CSV（先下載 → 上傳到 AI）</span>
+                    <a href="goose_mama_sales.csv" download style="background:#10b981; color:white; font-size:0.75rem; font-weight:700; padding:4px 12px; border-radius:20px; text-decoration:none; white-space:nowrap;">⬇ 下載完整數據 CSV</a>
+                </div>
+                <div class="dtable-wrap">
+                    <table class="dtable">
+                        <thead>
+                            <tr>
+                                <th>日期</th>
+                                <th>產品名稱</th>
+                                <th>氣溫 (°C)</th>
+                                <th>考試週</th>
+                                <th>售價 (HK$)</th>
+                                <th>銷量</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>2025-09-01</td><td>🧋 珍珠奶茶</td><td>32</td><td>否</td><td>$32</td><td>48</td></tr>
+                            <tr><td>2025-09-01</td><td>🧀 芝士奶蓋</td><td>32</td><td>否</td><td>$45</td><td>21</td></tr>
+                            <tr><td>2025-09-01</td><td>🌿 燒仙草</td><td>32</td><td>否</td><td>$38</td><td>29</td></tr>
+                            <tr><td>2025-09-01</td><td>🫧 手工梳打</td><td>32</td><td>否</td><td>$28</td><td>14</td></tr>
+                            <tr><td>2025-09-01</td><td>🍵 純茶</td><td>32</td><td>否</td><td>$22</td><td>7</td></tr>
+                            <tr style="color:#64748b; font-style:italic;"><td colspan="6" style="text-align:center; padding:8px;">… 共 305 行記錄（9月1日 至 10月31日）…</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Prompt -->
+            <div class="prompt-block">
+                <div class="prompt-code">
+                    <div class="prompt-placeholder" id="ph1">👇 點擊「查看」預覽完整 Prompt</div>
+                    <div class="prompt-text-el" id="pt1">我是「鵝媽媽奶茶」的老闆。我已上傳一份銷售數據 CSV 檔案，包含 2025年9至10月的每日銷售記錄，欄位如下：
+- 日期：每日日期
+- 產品名稱：珍珠奶茶、芝士奶蓋、燒仙草、手工梳打、純茶
+- 氣溫_攝氏：當日氣溫
+- 是否考試週：是／否
+- 售價_港幣：各產品售價
+- 銷量：當日銷售杯數
+
+請分析這份數據：
+1. 哪款產品整體銷量最高？哪款最低？請計算每款產品的兩個月總收入並排名。
+2. 氣溫對銷量是否有明顯影響？請找出規律（例如氣溫越高，哪款產品銷量更佳）。
+3. 考試週期間，各產品銷量與非考試週相比有何分別？請作出比較。
+4. 根據以上分析，請給我 2 個可在下個月提升收入的具體行動建議。</div>
+                </div>
+                <div class="prompt-actions">
+                    <button class="btn-peek" onclick="togglePt('pt1','ph1',this)">👁 查看</button>
+                    <button class="btn-copy-main bc1" onclick="doCopy('pt1','任務 1 Prompt')">📋 複製 Prompt → 貼入 AI</button>
+                </div>
+            </div>
+
+            <div class="tip">
+                <span class="tip-icon">💡</span>
+                <span class="tip-text">數字本身沒有意義——AI 的分析和建議才是商業價值。把數據變成決策，這就是數據分析師的核心工作。</span>
+            </div>
+
+        </div>
+    </article>
+
+    <!-- ===== 任務 2 ===== -->
+    <article class="task-card c2" id="task2">
+        <div class="card-top ct2">
+            <div class="task-num-badge">任務 2</div>
+            <div class="card-top-title">顧客數據採集 + 畫像</div>
+            <div class="card-top-concept">Customer Persona</div>
+        </div>
+        <div class="card-body">
+
+            <div class="task-brief">
+                <div class="task-brief-icon">🎯</div>
+                <div class="task-brief-text">
+                    <strong>你的工作：</strong>我們知道賣了什麼，但不知道買嘅人點睇。以下係 50 條真實顧客評論——
+                    操作步驟：<strong>① 下載 CSV</strong> → <strong>② 上傳到 AI</strong> → <strong>③ 複製 Prompt 貼入</strong>，讓 AI 分析出最受歡迎嘅產品、最大投訴問題，同埋建立 2 個顧客畫像。
+                </div>
+            </div>
+
+            <!-- 顧客評論數據 -->
+            <div class="data-block">
+                <div class="data-block-title db-t2" style="display:flex; justify-content:space-between; align-items:center;">
+                    <span>💬 顧客真實評論 CSV（先下載 → 上傳到 AI）</span>
+                    <a href="reviews.csv" download style="background:#0ea5e9; color:white; font-size:0.75rem; font-weight:700; padding:4px 12px; border-radius:20px; text-decoration:none; white-space:nowrap;">⬇ 下載 CSV</a>
+                </div>
+                <div class="reviews" style="max-height: 300px; overflow-y: auto;">
+                    <div class="review"><span class="review-n">#01</span><span class="review-t">珍珠奶茶係我最愛，珍珠好彈牙，甜度啱啱好！</span></div>
+                    <div class="review"><span class="review-n">#02</span><span class="review-t">芝士奶蓋芝士層好厚好香，下次一定再嚟！</span></div>
+                    <div class="review"><span class="review-n">#03</span><span class="review-t">燒仙草好清甜唔膩，夏天飲啱晒！</span></div>
+                    <div class="review"><span class="review-n">#04</span><span class="review-t">等咗 40 分鐘先出到單，好難頂。</span></div>
+                    <div class="review"><span class="review-n">#05</span><span class="review-t">珍珠奶茶好味，但係等咗 35 分鐘，有啲耐。</span></div>
+                    <div class="review"><span class="review-n">#06</span><span class="review-t">芝士奶蓋係我每次必點，好特別！</span></div>
+                    <div class="review"><span class="review-n">#07</span><span class="review-t">出單好慢，等咗 45 分鐘差啲趕唔切搭車。</span></div>
+                    <div class="review"><span class="review-n">#08</span><span class="review-t">燒仙草仙草味好濃，唔係稀薄版本，好讚！</span></div>
+                    <div class="review"><span class="review-n">#09</span><span class="review-t">珍珠係自家製，食落真係唔同，好彈牙！</span></div>
+                    <div class="review"><span class="review-n">#10</span><span class="review-t">等咗超過半個鐘，工作人員話係忙，希望改善。</span></div>
+                    <div class="review"><span class="review-n">#11</span><span class="review-t">珍珠奶茶係全區最好味，但係出單速度要改善。</span></div>
+                    <div class="review"><span class="review-n">#12</span><span class="review-t">芝士奶蓋同男友一齊嚟都係點呢個，係最愛！</span></div>
+                    <div class="review"><span class="review-n">#13</span><span class="review-t">出單慢係一個大問題，我見到有客因為等太耐而走咗。</span></div>
+                    <div class="review"><span class="review-n">#14</span><span class="review-t">燒仙草份量足，性價比高，下次再試！</span></div>
+                    <div class="review"><span class="review-n">#15</span><span class="review-t">珍珠奶茶好正，同學放學後成日嚟呢度買。</span></div>
+                    <div class="review"><span class="review-n">#16</span><span class="review-t">出單要等近 40 分鐘，影響咗我同朋友嘅計劃。</span></div>
+                    <div class="review"><span class="review-n">#17</span><span class="review-t">芝士奶蓋芝士係鹹嘅但配奶茶出奇地好味！</span></div>
+                    <div class="review"><span class="review-n">#18</span><span class="review-t">等咗 30 分鐘，好在飲品好味，否則唔會再嚟。</span></div>
+                    <div class="review"><span class="review-n">#19</span><span class="review-t">珍珠奶茶係招牌，好多人係專程嚟飲呢款。</span></div>
+                    <div class="review"><span class="review-n">#20</span><span class="review-t">出單慢令我放學後買完趕唔切去補習。</span></div>
+                    <div class="review"><span class="review-n">#21</span><span class="review-t">芝士奶蓋好值，份量足，下次帶朋友嚟試！</span></div>
+                    <div class="review"><span class="review-n">#22</span><span class="review-t">珍珠好大粒彈牙，係近年飲過最好嘅珍珠奶茶。</span></div>
+                    <div class="review"><span class="review-n">#23</span><span class="review-t">等咗半個鐘，朋友都唔想等走咗，之後可能唔會再嚟。</span></div>
+                    <div class="review"><span class="review-n">#24</span><span class="review-t">燒仙草唔係太甜，啱我口味，係呢度最常點嘅。</span></div>
+                    <div class="review"><span class="review-n">#25</span><span class="review-t">珍珠奶茶每週都嚟買，係附近最好飲嘅！</span></div>
+                    <div class="review"><span class="review-n">#26</span><span class="review-t">出單慢已係好多人嘅投訴，希望老闆改善流程。</span></div>
+                    <div class="review"><span class="review-n">#27</span><span class="review-t">芝士奶蓋係少數做得好嘅，唔係每間都有咁高質。</span></div>
+                    <div class="review"><span class="review-n">#28</span><span class="review-t">純茶有啲單調，但係鐘意清淡嘅人應該會喜歡。</span></div>
+                    <div class="review"><span class="review-n">#29</span><span class="review-t">珍珠奶茶好味到願意等，但係希望可以快啲。</span></div>
+                    <div class="review"><span class="review-n">#30</span><span class="review-t">出單速度影響體驗，建議可以做網上落單減少等待。</span></div>
+                    <div class="review"><span class="review-n">#31</span><span class="review-t">燒仙草同芝士奶蓋都試過，更鐘意燒仙草！</span></div>
+                    <div class="review"><span class="review-n">#32</span><span class="review-t">等咗 45 分鐘先拎到飲品，第一次嚟下次要考慮係咪再嚟。</span></div>
+                    <div class="review"><span class="review-n">#33</span><span class="review-t">珍珠奶茶係朋友介紹嚟，試完即刻愛上，之後每週都嚟！</span></div>
+                    <div class="review"><span class="review-n">#34</span><span class="review-t">芝士奶蓋唔係普通奶茶，係要試嘅特別款！</span></div>
+                    <div class="review"><span class="review-n">#35</span><span class="review-t">手工梳打好清爽，但係同芝士奶蓋比唔夠特別。</span></div>
+                    <div class="review"><span class="review-n">#36</span><span class="review-t">出單慢減一星，飲品本身好值得五星！</span></div>
+                    <div class="review"><span class="review-n">#37</span><span class="review-t">珍珠奶茶係同學中最多人點嘅，係鵝媽媽嘅代表作！</span></div>
+                    <div class="review"><span class="review-n">#38</span><span class="review-t">燒仙草好飲，但係份量可以多啲仙草粒。</span></div>
+                    <div class="review"><span class="review-n">#39</span><span class="review-t">等咗近 40 分鐘，飲品好味但係時間成本太高。</span></div>
+                    <div class="review"><span class="review-n">#40</span><span class="review-t">芝士奶蓋每次嚟都必點，係我最鍾意嘅一款！</span></div>
+                    <div class="review"><span class="review-n">#41</span><span class="review-t">珍珠奶茶好好飲，放學一定嚟買，係我嘅日常！</span></div>
+                    <div class="review"><span class="review-n">#42</span><span class="review-t">出單太慢，下次寧願去其他店，雖然唔及呢度好味。</span></div>
+                    <div class="review"><span class="review-n">#43</span><span class="review-t">燒仙草好適合唔想太甜嘅人，好健康！</span></div>
+                    <div class="review"><span class="review-n">#44</span><span class="review-t">手工梳打係健康之選，但係銷量明顯唔及珍珠奶茶。</span></div>
+                    <div class="review"><span class="review-n">#45</span><span class="review-t">等咗半個鐘，老闆要認真考慮加人手或改善流程。</span></div>
+                    <div class="review"><span class="review-n">#46</span><span class="review-t">珍珠奶茶同芝士奶蓋係最多人排隊等嘅兩款飲品。</span></div>
+                    <div class="review"><span class="review-n">#47</span><span class="review-t">芝士奶蓋好香滑，係我帶朋友嚟必介紹嘅款式。</span></div>
+                    <div class="review"><span class="review-n">#48</span><span class="review-t">出單慢係致命弱點，好味但係留唔住趕時間嘅客人。</span></div>
+                    <div class="review"><span class="review-n">#49</span><span class="review-t">純茶好清淡，係健康之選，但係比起其他款唔係咁受歡迎。</span></div>
+                    <div class="review"><span class="review-n">#50</span><span class="review-t">整體飲品質素高，珍珠奶茶同芝士奶蓋最受歡迎，但出單速度真係要改善！</span></div>
+                </div>
+            </div>
+
+            <!-- Prompt -->
+            <div class="prompt-block">
+                <div class="prompt-code">
+                    <div class="prompt-placeholder" id="ph2">👇 點擊「查看」預覽完整 Prompt</div>
+                    <div class="prompt-text-el" id="pt2">我是「鵝媽媽奶茶」的老闆。我已上傳一份顧客評論 CSV 檔案，包含 50 條真實顧客評論，欄位為：評論編號、評論內容。
+
+請分析這份評論數據：
+1. 哪幾款產品最受顧客歡迎？請按受歡迎程度排列，並說明顧客喜愛的原因。
+2. 顧客最常見的投訴是什麼？這個問題如何影響生意銷售？（是否有顧客因此流失？）
+3. 根據評論內容，建立 2 個顧客畫像（Customer Persona），並為每個畫像提供 1 個針對性的推廣策略。</div>
+                </div>
+                <div class="prompt-actions">
+                    <button class="btn-peek" onclick="togglePt('pt2','ph2',this)">👁 查看</button>
+                    <button class="btn-copy-main bc2" onclick="doCopy('pt2','任務 2 Prompt')">📋 複製 Prompt → 貼入 AI</button>
+                </div>
+            </div>
+
+            <div class="tip">
+                <span class="tip-icon">💡</span>
+                <span class="tip-text">顧客評論係非結構化數據——AI 幫你快速提煉出規律。留意哪款最多人讚、出單慢點樣令客人流失，呢兩個洞察係任務 3 Gap Analysis 嘅重要依據。</span>
+            </div>
+
+        </div>
+    </article>
+
+    <!-- ===== 任務 3 ===== -->
+    <article class="task-card c3" id="task3">
+        <div class="card-top ct3">
+            <div class="task-num-badge">任務 3</div>
+            <div class="card-top-title">商業 Gap Analysis</div>
+            <div class="card-top-concept">差距分析框架</div>
+        </div>
+        <div class="card-body">
+
+            <div class="task-brief">
+                <div class="task-brief-icon">📈</div>
+                <div class="task-brief-text">
+                    <strong>Gap Analysis 框架：現況 → 目標 → 差距 → 行動</strong><br>
+                    老闆下個月目標 $50,000。先上傳銷售 CSV，讓 <strong>AI 計算現況收入</strong>，再找出差距，最後制定 3 個填補差距的行動方案。
+                </div>
+            </div>
+
+            <!-- 框架圖解 -->
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;">
+                <div style="background: #fef3c7; border-radius: 8px; padding: 10px; text-align: center;">
+                    <div style="font-size: 1.3rem;">📍</div>
+                    <div style="font-size: 0.72rem; font-weight: 800; color: #92400e; margin-top: 4px;">現況</div>
+                    <div style="font-size: 0.85rem; color: #78350f; font-weight: 700; margin-top: 2px;">AI 計算</div>
+                </div>
+                <div style="background: #d1fae5; border-radius: 8px; padding: 10px; text-align: center;">
+                    <div style="font-size: 1.3rem;">🎯</div>
+                    <div style="font-size: 0.72rem; font-weight: 800; color: #065f46; margin-top: 4px;">目標</div>
+                    <div style="font-size: 0.85rem; color: #064e3b; font-weight: 700; margin-top: 2px;">$200,000</div>
+                </div>
+                <div style="background: #fee2e2; border-radius: 8px; padding: 10px; text-align: center;">
+                    <div style="font-size: 1.3rem;">⚡</div>
+                    <div style="font-size: 0.72rem; font-weight: 800; color: #991b1b; margin-top: 4px;">差距</div>
+                    <div style="font-size: 0.85rem; color: #7f1d1d; font-weight: 700; margin-top: 2px;">AI 計算</div>
+                </div>
+                <div style="background: #ede9fe; border-radius: 8px; padding: 10px; text-align: center;">
+                    <div style="font-size: 1.3rem;">🚀</div>
+                    <div style="font-size: 0.72rem; font-weight: 800; color: #5b21b6; margin-top: 4px;">行動</div>
+                    <div style="font-size: 0.85rem; color: #4c1d95; font-weight: 700; margin-top: 2px;">策略方案</div>
+                </div>
+            </div>
+
+            <!-- Prompt -->
+            <div class="prompt-block">
+                <div class="prompt-code">
+                    <div class="prompt-placeholder" id="ph3">👇 點擊「查看」預覽完整 Prompt</div>
+                    <div class="prompt-text-el" id="pt3">我是「鵝媽媽奶茶」的老闆。我已上傳銷售數據 CSV 檔案（與任務一相同的檔案）。
+
+第一步——請根據 CSV 數據計算以下現況指標：
+- 最近一個月（10月）的總銷售收入
+- 10月平均每日銷售杯數
+- 銷量最高與最低的產品
+
+第二步——請進行差距分析（Gap Analysis）：
+- 目標：下個月銷售額達到 $200,000
+- 根據你計算的現況收入，找出差距金額
+
+第三步——請給我 3 個可以在 2 週內執行的行動方案，填補這個差距。每個方案需說明：
+1. 具體行動內容
+2. 預期可增加多少收入
+3. 需要什麼資源或成本
+
+請以清晰的商業報告格式輸出。</div>
+                </div>
+                <div class="prompt-actions">
+                    <button class="btn-peek" onclick="togglePt('pt3','ph3',this)">👁 查看</button>
+                    <button class="btn-copy-main bc3" onclick="doCopy('pt3','任務 3 Prompt')">📋 複製 Prompt → 貼入 AI</button>
+                </div>
+            </div>
+
+            <div class="tip">
+                <span class="tip-icon">💡</span>
+                <span class="tip-text">Gap Analysis 把模糊的「想做得更好」變成具體的「差距在哪裡、要做什麼」。記住這個框架——任務 4 你會再用一次。</span>
+            </div>
+
+        </div>
+    </article>
+
+    <!-- ===== 任務 4 ===== -->
+    <article class="task-card c4" id="task4">
+        <div class="card-top ct4">
+            <div class="task-num-badge">任務 4</div>
+            <div class="card-top-title">我的 JUPAS 差距分析</div>
+            <div class="card-top-concept">同一框架 · 個人應用</div>
+        </div>
+        <div class="card-body">
+
+            <div class="task-brief">
+                <div class="task-brief-icon">🎓</div>
+                <div class="task-brief-text">
+                    你啱啱幫奶茶店老闆做完差距分析——<br>
+                    <strong>但其實，你自己就是一個最重要的商業項目。</strong><br>
+                    現在用同一個框架，分析你的 JUPAS 情況。
+                </div>
+            </div>
+
+            <!-- 對照表 -->
+            <div class="data-block">
+                <div class="data-block-title db-t4">🔄 商業概念 ↔ 你的 JUPAS 情況</div>
+                <div class="compare-wrap">
+                    <table class="ctable">
+                        <thead>
+                            <tr>
+                                <th>商業概念</th>
+                                <th>你的 JUPAS 情況</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>現況 (Current State)</td><td>你的預計 DSE 成績</td></tr>
+                            <tr><td>目標 (Target / KPI)</td><td>心儀課程的 LQ 分數</td></tr>
+                            <tr><td>差距 (Gap)</td><td>你需要追回的分數</td></tr>
+                            <tr><td>行動方案 (Action Items)</td><td>具體的備考策略</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- JUPAS 參考課程表 -->
+            <div class="data-block">
+                <div class="data-block-title db-t4">📋 2025 JUPAS 參考課程（最佳 5 科計分）</div>
+                <div style="overflow-x: auto;">
+                    <table style="width:100%; border-collapse: collapse; font-size: 0.82rem;">
+                        <thead>
+                            <tr style="background:#1e293b; color:white;">
+                                <th style="padding:8px 12px; text-align:left; font-weight:700;">課程代號</th>
+                                <th style="padding:8px 12px; text-align:left; font-weight:700;">大學</th>
+                                <th style="padding:8px 12px; text-align:left; font-weight:700;">課程名稱</th>
+                                <th style="padding:8px 12px; text-align:center; font-weight:700; background:#7f1d1d;">LQ</th>
+                                <th style="padding:8px 12px; text-align:center; font-weight:700;">中位數</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="background:#eff6ff; outline: 2px solid #3b82f6; outline-offset:-1px;">
+                                <td style="padding:8px 12px; color:#1d4ed8; font-weight:700;">JS1019 ⭐</td>
+                                <td style="padding:8px 12px; font-weight:600;">香港城市大學</td>
+                                <td style="padding:8px 12px; font-weight:600;">工商管理<br><span style="font-size:0.75rem; color:#2563eb;">（人工智能商業應用）</span></td>
+                                <td style="padding:8px 12px; text-align:center; font-weight:700; color:#9f1239; background:#fff5f5;">21</td>
+                                <td style="padding:8px 12px; text-align:center;">23</td>
+                            </tr>
+                            <tr style="background:#fff;">
+                                <td style="padding:8px 12px; color:#92400e; font-weight:600;">JS1002</td>
+                                <td style="padding:8px 12px;">香港城市大學</td>
+                                <td style="padding:8px 12px;">工商管理（會計）</td>
+                                <td style="padding:8px 12px; text-align:center; font-weight:700; color:#9f1239; background:#fff5f5;">21.5</td>
+                                <td style="padding:8px 12px; text-align:center;">22</td>
+                            </tr>
+                            <tr style="background:#f8fafc;">
+                                <td style="padding:8px 12px; color:#92400e; font-weight:600;">JS1007</td>
+                                <td style="padding:8px 12px;">香港城市大學</td>
+                                <td style="padding:8px 12px;">工商管理（市場學）</td>
+                                <td style="padding:8px 12px; text-align:center; font-weight:700; color:#9f1239; background:#fff5f5;">23.5</td>
+                                <td style="padding:8px 12px; text-align:center;">24.5</td>
+                            </tr>
+                            <tr style="background:#fff;">
+                                <td style="padding:8px 12px; color:#92400e; font-weight:600;">JS7212</td>
+                                <td style="padding:8px 12px;">嶺南大學</td>
+                                <td style="padding:8px 12px;">工商管理（商業分析）</td>
+                                <td style="padding:8px 12px; text-align:center; font-weight:700; color:#9f1239; background:#fff5f5;">25</td>
+                                <td style="padding:8px 12px; text-align:center;">27</td>
+                            </tr>
+                            <tr style="background:#f8fafc;">
+                                <td style="padding:8px 12px; color:#92400e; font-weight:600;">6717</td>
+                                <td style="padding:8px 12px;">香港大學</td>
+                                <td style="padding:8px 12px;">社會科學</td>
+                                <td style="padding:8px 12px; text-align:center; font-weight:700; color:#9f1239; background:#fff5f5;">29</td>
+                                <td style="padding:8px 12px; text-align:center;">31</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="font-size:0.78rem; color:#64748b; margin-top:8px; padding: 0 4px;">
+                    資料來源：2025 JUPAS 各大學收生資料 ｜ LQ = Lower Quartile（下四分位數），即入讀該課程中，最低的25%學生的分數。
+                </div>
+            </div>
+
+            <!-- 參考數據 -->
+            <div class="data-block">
+                <div class="data-block-title db-t4">👤 參考數據：虛構學生「阿明」（或填入你自己的真實情況）</div>
+                <div class="profile-grid">
+                    <div class="profile-cell">
+                        <label>預計 DSE 總分</label>
+                        <span>18 分（3,3,4,4,4）</span>
+                    </div>
+                    <div class="profile-cell">
+                        <label>目標課程</label>
+                        <span>城大 JS1019<br>工商管理（人工智能商業應用）</span>
+                    </div>
+                    <div class="profile-cell">
+                        <label>目標課程去年 LQ</label>
+                        <span>21 分</span>
+                    </div>
+                    <div class="profile-cell">
+                        <label>差距</label>
+                        <span>需追回 3 分</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Prompt -->
+            <div class="prompt-block">
+                <div class="prompt-code">
+                    <div class="prompt-placeholder" id="ph4">👇 點擊「查看」預覽完整 Prompt（記得填入你的數據！）</div>
+                    <div class="prompt-text-el" id="pt4">你是一位專業的學術數據分析顧問。
+
+我的現況數據：
+- 預計 DSE 最佳 5 科總分：18 分（中文 3、英文 3、數學 4、通識 4、選修 4）
+- 目標課程：香港城市大學 JS1019 工商管理（人工智能商業應用）
+- 目標課程 2025 年 LQ：21 分
+
+請以商業差距分析的格式，為我生成一份個人學術策略報告：
+
+1. 現況總結：用一句話說明我目前距離目標的處境
+2. 差距量化：具體指出差距有多少分，哪幾科最需要提升
+3. 行動方案：給我 3 個可以立即執行的具體策略，每個附上合理時間線
+
+請以清晰的報告格式輸出，要直接、數據為本。</div>
+                </div>
+                <div class="prompt-actions">
+                    <button class="btn-peek" onclick="togglePt('pt4','ph4',this)">👁 查看</button>
+                    <button class="btn-copy-main bc4" onclick="doCopy('pt4','任務 4 Prompt')">📋 複製 Prompt → 貼入 AI</button>
+                </div>
+            </div>
+
+            <div class="tip">
+                <span class="tip-icon">💡</span>
+                <span class="tip-text">Gap Analysis 不只是商業工具——它是一種用數據思考問題的方式。無論面對生意還是人生決策，這個框架都能幫你更清晰地行動。</span>
+            </div>
+
+        </div>
+    </article>
+
+    <!-- ===== 結語 ===== -->
+    <div class="outro-card">
+        <h2>今日數據決策循環</h2>
+
+        <div class="flow-mini">
+            <span class="flow-pill">📥 原始數據</span>
+            <span class="flow-arr">→</span>
+            <span class="flow-pill">📊 AI 分析</span>
+            <span class="flow-arr">→</span>
+            <span class="flow-pill">👥 顧客畫像</span>
+            <span class="flow-arr">→</span>
+            <span class="flow-pill">🎯 Gap Analysis</span>
+            <span class="flow-arr">→</span>
+            <span class="flow-pill" style="background: rgba(251,191,36,0.2); border-color: rgba(251,191,36,0.4); color: #fbbf24;">✅ 更好的決策</span>
+        </div>
+
+        <p style="color: rgba(255,255,255,0.7); font-size: 0.9rem; line-height: 1.7;">
+            「AI 不是替你做決定，而是幫你把數據變成你需要的答案。<br>
+            今日你學到的，不只是工具，而是一種用數據思考的方式。」
+        </p>
+
+        <div class="verify-box">
+            <p>課堂結束問題：</p>
+            <div class="verify-q">「Gap Analysis 係咩？我今日用它分析了哪兩個情況？」</div>
+        </div>
+    </div>
+
+</main>
+
+<!-- ===== Toast ===== -->
+<div class="toast" id="toast">
+    <span>✓</span>
+    <span id="toastMsg">已複製！請貼入 AI 視窗</span>
+</div>
+
+<!-- ===== Modal ===== -->
+<div class="modal-overlay" id="modalOverlay">
+    <div class="modal-box">
+        <div class="modal-title">⚠️ 請手動複製</div>
+        <p class="modal-hint">自動複製無法使用。請按 <strong>Ctrl+A</strong> 全選，再按 <strong>Ctrl+C</strong>：</p>
+        <textarea class="modal-ta" id="modalTa" readonly></textarea>
+        <div class="modal-btns">
+            <button class="modal-btn modal-btn-ok" onclick="closeModal()">我已複製</button>
+            <button class="modal-btn modal-btn-close" onclick="closeModal()">關閉</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ===== 展開/收起 =====
+    function togglePt(ptId, phId, btn) {
+        const pt = document.getElementById(ptId);
+        const ph = document.getElementById(phId);
+        const open = pt.classList.contains('open');
+        pt.classList.toggle('open', !open);
+        ph.style.display = open ? 'block' : 'none';
+        btn.textContent = open ? '👁 查看' : '🔼 收起';
+    }
+
+    // ===== 複製 =====
+    async function doCopy(ptId, label) {
+        const text = document.getElementById(ptId).textContent.trim();
+        const ok = await copyText(text);
+        if (ok) showToast('✓ 已複製「' + label + '」！貼入 AI 視窗');
+    }
+
+    async function copyText(text) {
+        try {
+            await navigator.clipboard.writeText(text);
+            return true;
+        } catch {
+            try {
+                const ta = document.createElement('textarea');
+                ta.value = text;
+                ta.style.cssText = 'position:fixed;opacity:0;top:0;left:0';
+                document.body.appendChild(ta);
+                ta.select();
+                const ok = document.execCommand('copy');
+                document.body.removeChild(ta);
+                if (ok) return true;
+                throw new Error();
+            } catch {
+                showModal(text);
+                return false;
+            }
+        }
+    }
+
+    // ===== Toast =====
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        document.getElementById('toastMsg').textContent = msg;
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 3000);
+    }
+
+    // ===== Modal =====
+    function showModal(text) {
+        const ta = document.getElementById('modalTa');
+        ta.value = text;
+        document.getElementById('modalOverlay').classList.add('show');
+        setTimeout(() => { ta.select(); ta.focus(); }, 120);
+    }
+
+    function closeModal() {
+        document.getElementById('modalOverlay').classList.remove('show');
+    }
+
+    document.getElementById('modalOverlay').addEventListener('click', e => {
+        if (e.target === e.currentTarget) closeModal();
+    });
+
+    // ===== 鍵盤快捷鍵 =====
+    const keys = { '1': ['pt1','任務 1 Prompt'], '2': ['pt2','任務 2 Prompt'], '3': ['pt3','任務 3 Prompt'], '4': ['pt4','任務 4 Prompt'] };
+    document.addEventListener('keydown', e => {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+        if (keys[e.key]) doCopy(...keys[e.key]);
+    });
+
+    // ===== 平滑滾動 =====
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+        a.addEventListener('click', e => {
+            e.preventDefault();
+            document.querySelector(a.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+    });
+</script>
+
+</body>
+</html>

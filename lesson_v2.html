@@ -1,0 +1,1470 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HKIT ApL：你係數據分析師 — AI 商業數據決策模擬</title>
+    <style>
+        /* ========== CSS 變數系統 ========== */
+        :root {
+            --bg-primary: #f0f4f8;
+            --bg-card: #ffffff;
+            --text-primary: #1a202c;
+            --text-secondary: #4a5568;
+            --text-muted: #718096;
+            --border-color: #e2e8f0;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 25px rgba(0,0,0,0.15);
+            --spacing-xs: 8px;
+            --spacing-sm: 12px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+
+            /* Part 顏色 */
+            --p1: #6366f1;
+            --p2: #0ea5e9;
+            --p3: #10b981;
+            --p4a: #f59e0b;
+            --p4b: #ef4444;
+            --p5: #8b5cf6;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Microsoft YaHei', 'PingFang TC', 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* ========== Header ========== */
+        header {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            color: white;
+            padding: var(--spacing-xl) var(--spacing-lg);
+            text-align: center;
+        }
+
+        .header-tag {
+            display: inline-block;
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            margin-bottom: var(--spacing-sm);
+            text-transform: uppercase;
+        }
+
+        header h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: var(--spacing-sm);
+            color: white;
+        }
+
+        .header-subtitle {
+            font-size: 1rem;
+            color: rgba(255,255,255,0.75);
+            max-width: 700px;
+            margin: 0 auto var(--spacing-md);
+            line-height: 1.7;
+        }
+
+        .story-box {
+            display: inline-block;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.25);
+            border-radius: 10px;
+            padding: var(--spacing-md) var(--spacing-lg);
+            max-width: 680px;
+            font-size: 0.95rem;
+            color: rgba(255,255,255,0.9);
+            line-height: 1.7;
+            font-style: italic;
+        }
+
+        /* ========== 時間軸 ========== */
+        .timeline-bar {
+            background: var(--bg-card);
+            border-bottom: 2px solid var(--border-color);
+            padding: var(--spacing-md) var(--spacing-lg);
+            display: flex;
+            gap: 4px;
+            overflow-x: auto;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow-md);
+        }
+
+        .timeline-item {
+            flex: 1;
+            min-width: 100px;
+            text-align: center;
+            padding: 8px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+            text-decoration: none;
+            display: block;
+        }
+
+        .timeline-item:hover { opacity: 0.85; transform: translateY(-1px); }
+
+        .timeline-time {
+            font-size: 0.7rem;
+            font-weight: 600;
+            opacity: 0.8;
+            display: block;
+        }
+
+        .timeline-label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: white;
+            display: block;
+            margin-top: 2px;
+        }
+
+        .t1 { background: var(--p1); }
+        .t2 { background: var(--p2); }
+        .t3 { background: var(--p3); }
+        .t4a { background: var(--p4a); }
+        .t4b { background: var(--p4b); }
+        .t5 { background: var(--p5); }
+
+        /* ========== 主容器 ========== */
+        main {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: var(--spacing-xl) var(--spacing-lg);
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-xl);
+        }
+
+        /* ========== Part Section ========== */
+        .part-section {
+            background: var(--bg-card);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+        }
+
+        .part-header {
+            padding: var(--spacing-lg) var(--spacing-xl);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+
+        .part-badge {
+            background: rgba(255,255,255,0.25);
+            border: 2px solid rgba(255,255,255,0.4);
+            border-radius: 8px;
+            padding: 6px 14px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: white;
+            white-space: nowrap;
+        }
+
+        .part-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: white;
+            flex: 1;
+        }
+
+        .part-concept {
+            background: rgba(255,255,255,0.2);
+            border-radius: 20px;
+            padding: 4px 14px;
+            font-size: 0.78rem;
+            color: white;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .p1-header { background: linear-gradient(135deg, var(--p1), #818cf8); }
+        .p2-header { background: linear-gradient(135deg, var(--p2), #38bdf8); }
+        .p3-header { background: linear-gradient(135deg, var(--p3), #34d399); }
+        .p4a-header { background: linear-gradient(135deg, var(--p4a), #fbbf24); }
+        .p4b-header { background: linear-gradient(135deg, var(--p4b), #f87171); }
+        .p5-header { background: linear-gradient(135deg, var(--p5), #a78bfa); }
+
+        .part-body {
+            padding: var(--spacing-xl);
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-lg);
+        }
+
+        /* ========== 說明框 ========== */
+        .explain-box {
+            background: #f8fafc;
+            border-left: 4px solid var(--border-color);
+            border-radius: 0 8px 8px 0;
+            padding: var(--spacing-md) var(--spacing-lg);
+        }
+
+        .explain-box h3 {
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .explain-box p, .explain-box li {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        .explain-box ul { padding-left: var(--spacing-lg); }
+        .explain-box li { margin-bottom: 4px; }
+
+        /* ========== 學習點 ========== */
+        .learning-point {
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            border-radius: 8px;
+            padding: var(--spacing-md) var(--spacing-lg);
+            display: flex;
+            gap: var(--spacing-sm);
+            align-items: flex-start;
+        }
+
+        .learning-point .icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 1px; }
+
+        .learning-point p {
+            color: #92400e;
+            font-size: 0.95rem;
+            font-weight: 600;
+            line-height: 1.6;
+        }
+
+        /* ========== 數據表格 ========== */
+        .data-section {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 10px;
+            padding: var(--spacing-lg);
+        }
+
+        .data-section h3 {
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #166534;
+            margin-bottom: var(--spacing-md);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.88rem;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .data-table th {
+            background: #166534;
+            color: white;
+            padding: 10px 14px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .data-table td {
+            padding: 9px 14px;
+            text-align: center;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .data-table tr:last-child td { border-bottom: none; }
+
+        .data-table tr:nth-child(even) td { background: #f9fafb; }
+
+        .data-table td:first-child { text-align: left; font-weight: 600; }
+
+        /* ========== 評論列表 ========== */
+        .reviews-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .review-item {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: var(--spacing-sm) var(--spacing-md);
+            display: flex;
+            gap: var(--spacing-sm);
+            align-items: flex-start;
+            font-size: 0.9rem;
+        }
+
+        .review-num {
+            background: #e0e7ff;
+            color: #3730a3;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 12px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .review-text { color: var(--text-secondary); line-height: 1.5; }
+
+        /* ========== 對照表 ========== */
+        .compare-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .compare-table th {
+            padding: 11px 16px;
+            text-align: left;
+            font-weight: 700;
+            font-size: 0.82rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .compare-table th:first-child { background: #fef3c7; color: #92400e; }
+        .compare-table th:last-child { background: #fee2e2; color: #991b1b; }
+
+        .compare-table td {
+            padding: 10px 16px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: top;
+        }
+
+        .compare-table tr:last-child td { border-bottom: none; }
+        .compare-table td:first-child { color: #92400e; font-weight: 600; background: #fffbeb; }
+        .compare-table td:last-child { color: #991b1b; background: #fff5f5; }
+
+        /* ========== Prompt 卡片 ========== */
+        .prompt-card {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .prompt-card-header {
+            padding: var(--spacing-sm) var(--spacing-lg);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: var(--spacing-sm);
+        }
+
+        .prompt-card-title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .prompt-card-tag {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 12px;
+            padding: 2px 10px;
+            font-size: 0.75rem;
+            color: white;
+            font-weight: 600;
+        }
+
+        .ph-p2 { background: var(--p2); }
+        .ph-p3 { background: var(--p3); }
+        .ph-p4a { background: var(--p4a); }
+        .ph-p4b { background: var(--p4b); }
+
+        .prompt-body {
+            background: #1e293b;
+            padding: var(--spacing-lg);
+        }
+
+        .prompt-text {
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.85rem;
+            line-height: 1.7;
+            color: #e2e8f0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            display: none;
+        }
+
+        .prompt-text.visible { display: block; }
+
+        .prompt-preview {
+            color: #94a3b8;
+            font-size: 0.85rem;
+            font-style: italic;
+        }
+
+        .prompt-actions {
+            background: #0f172a;
+            padding: var(--spacing-sm) var(--spacing-lg);
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+
+        .btn-toggle {
+            background: transparent;
+            color: #94a3b8;
+            border: 1px solid #334155;
+            padding: 7px 14px;
+            border-radius: 6px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-toggle:hover { background: #1e293b; color: white; }
+
+        .btn-copy {
+            flex: 1;
+            background: var(--accent-primary, #3b82f6);
+            color: white;
+            border: none;
+            padding: 7px 14px;
+            border-radius: 6px;
+            font-size: 0.88rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn-copy:hover { opacity: 0.9; transform: translateY(-1px); }
+        .btn-copy.p2-btn { background: var(--p2); }
+        .btn-copy.p3-btn { background: var(--p3); }
+        .btn-copy.p4a-btn { background: var(--p4a); }
+        .btn-copy.p4b-btn { background: var(--p4b); }
+
+        /* ========== 導師示範標籤 ========== */
+        .instructor-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            color: #c2410c;
+            font-size: 0.8rem;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+
+        .student-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            color: #166534;
+            font-size: 0.8rem;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+
+        /* ========== Part 4B 個人檔案 ========== */
+        .profile-box {
+            background: #fef2f2;
+            border: 2px solid #fecaca;
+            border-radius: 10px;
+            padding: var(--spacing-lg);
+        }
+
+        .profile-box h3 {
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #991b1b;
+            margin-bottom: var(--spacing-md);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .profile-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: var(--spacing-sm);
+        }
+
+        .profile-item {
+            background: white;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            padding: var(--spacing-sm) var(--spacing-md);
+        }
+
+        .profile-item label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #991b1b;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .profile-item span {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* ========== Part 5 流程圖 ========== */
+        .flow-diagram {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: var(--spacing-lg);
+            background: #f8fafc;
+            border-radius: 12px;
+        }
+
+        .flow-node {
+            background: white;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            padding: 12px 24px;
+            text-align: center;
+            font-size: 0.9rem;
+            font-weight: 600;
+            min-width: 280px;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.2s;
+        }
+
+        .flow-node:hover { transform: scale(1.02); box-shadow: var(--shadow-md); }
+
+        .fn1 { border-color: var(--p1); color: var(--p1); }
+        .fn2 { border-color: var(--p2); color: var(--p2); }
+        .fn3 { border-color: var(--p3); color: var(--p3); }
+        .fn4 { border-color: var(--p4b); color: var(--p4b); }
+        .fn5 { border-color: var(--p5); color: var(--p5); background: #f5f3ff; }
+
+        .flow-arrow {
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            line-height: 1;
+        }
+
+        .flow-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        /* ========== 總結一句 ========== */
+        .quote-box {
+            background: linear-gradient(135deg, #1e293b, #334155);
+            border-radius: 12px;
+            padding: var(--spacing-xl);
+            text-align: center;
+        }
+
+        .quote-box p {
+            color: white;
+            font-size: 1.1rem;
+            line-height: 1.7;
+            font-weight: 500;
+        }
+
+        .quote-box p strong { color: #fbbf24; }
+
+        /* ========== Toast ========== */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #10b981;
+            color: white;
+            padding: 14px 22px;
+            border-radius: 8px;
+            box-shadow: var(--shadow-lg);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateX(400px);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 9999;
+        }
+
+        .toast.show { transform: translateX(0); }
+
+        /* ========== Modal ========== */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9000;
+        }
+
+        .modal-overlay.show { display: flex; }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: var(--spacing-xl);
+            max-width: 580px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+        }
+
+        .modal-title { font-size: 1.2rem; font-weight: 700; margin-bottom: var(--spacing-md); }
+
+        .modal-textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: var(--spacing-md);
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            resize: vertical;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .modal-textarea:focus { outline: none; border-color: #3b82f6; }
+
+        .modal-btns { display: flex; gap: var(--spacing-sm); }
+
+        .modal-btn {
+            flex: 1;
+            padding: 11px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .modal-btn-primary { background: #3b82f6; color: white; }
+        .modal-btn-secondary { background: #f1f5f9; color: var(--text-primary); border: 2px solid var(--border-color); }
+
+        /* ========== Footer ========== */
+        footer {
+            background: var(--bg-card);
+            border-top: 2px solid var(--border-color);
+            padding: var(--spacing-lg);
+            text-align: center;
+        }
+
+        .footer-hint {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .kbd {
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            padding: 2px 7px;
+            font-family: monospace;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* ========== 響應式 ========== */
+        @media (max-width: 768px) {
+            header h1 { font-size: 1.5rem; }
+            .timeline-bar { gap: 3px; padding: var(--spacing-sm); }
+            .timeline-item { min-width: 70px; padding: 6px 6px; }
+            .timeline-label { font-size: 0.72rem; }
+            .part-body { padding: var(--spacing-lg); }
+            .data-table { font-size: 0.78rem; }
+            .data-table th, .data-table td { padding: 7px 9px; }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- ========== Header ========== -->
+<header>
+    <div class="header-tag">HKIT ApL · AI 商業應用</div>
+    <h1>你係數據分析師</h1>
+    <p class="header-subtitle">AI 商業數據決策模擬 · 60 分鐘沉浸式課堂</p>
+    <div class="story-box">
+        「今日你受聘為『鵝媽媽奶茶』的 AI 數據分析師。<br>
+        你要用 AI 幫老闆分析生意數據——<br>
+        但今日最後你會發現，<strong>同一套工具，其實也可以幫你規劃自己的未來。</strong>」
+    </div>
+</header>
+
+<!-- ========== 時間軸導航 ========== -->
+<nav class="timeline-bar" id="timelineBar">
+    <a class="timeline-item t1" href="#part1">
+        <span class="timeline-time">00-07 min</span>
+        <span class="timeline-label">Part 1<br>數據形態</span>
+    </a>
+    <a class="timeline-item t2" href="#part2">
+        <span class="timeline-time">07-22 min</span>
+        <span class="timeline-label">Part 2<br>銷售分析</span>
+    </a>
+    <a class="timeline-item t3" href="#part3">
+        <span class="timeline-time">22-35 min</span>
+        <span class="timeline-label">Part 3<br>顧客數據</span>
+    </a>
+    <a class="timeline-item t4a" href="#part4a">
+        <span class="timeline-time">35-43 min</span>
+        <span class="timeline-label">Part 4A<br>商業 Gap</span>
+    </a>
+    <a class="timeline-item t4b" href="#part4b">
+        <span class="timeline-time">43-56 min</span>
+        <span class="timeline-label">Part 4B<br>JUPAS Gap</span>
+    </a>
+    <a class="timeline-item t5" href="#part5">
+        <span class="timeline-time">56-60 min</span>
+        <span class="timeline-label">Part 5<br>總結</span>
+    </a>
+</nav>
+
+<!-- ========== Main ========== -->
+<main>
+
+    <!-- ===== PART 1 ===== -->
+    <section class="part-section" id="part1">
+        <div class="part-header p1-header">
+            <div class="part-badge">00-07 min</div>
+            <h2 class="part-title">Part 1：商業數據的兩種形態</h2>
+            <div class="part-concept">結構化 vs 非結構化數據</div>
+        </div>
+        <div class="part-body">
+
+            <div class="explain-box" style="border-color: var(--p1);">
+                <h3>📖 導師講解（4 分鐘）</h3>
+                <p>螢幕同時展示兩樣東西，向學生提問：</p>
+                <ul style="margin-top: 8px;">
+                    <li>左邊：奶茶店銷售記錄 Excel 表（<strong>結構化數據</strong>）</li>
+                    <li>右邊：5 條顧客 Google 評論（<strong>非結構化數據</strong>）</li>
+                </ul>
+                <p style="margin-top: 10px;"><strong>提問學生：</strong>「老闆想知道顧客最不滿意哪裡，用哪種數據更容易分析？為什麼？」</p>
+            </div>
+
+            <!-- 評論數據 -->
+            <div class="data-section" style="background: #f0f0ff; border-color: #c7d2fe;">
+                <h3 style="color: #3730a3;">💬 導師展示素材：5 條顧客評論（非結構化數據）</h3>
+                <div class="reviews-list">
+                    <div class="review-item">
+                        <span class="review-num">1</span>
+                        <span class="review-text">珍珠奶茶真的好飲！但等了 20 分鐘才拿到，高峰期真係太慢。</span>
+                    </div>
+                    <div class="review-item">
+                        <span class="review-num">2</span>
+                        <span class="review-text">芝士奶蓋口味獨特，但甜度調節選擇太少，希望可以自選甜度。</span>
+                    </div>
+                    <div class="review-item">
+                        <span class="review-num">3</span>
+                        <span class="review-text">環境乾淨，職員態度好，但桌椅太少，要企係度飲。</span>
+                    </div>
+                    <div class="review-item">
+                        <span class="review-num">4</span>
+                        <span class="review-text">燒仙草超好味！價錢合理，下次一定再來。不過停車位太難揾。</span>
+                    </div>
+                    <div class="review-item">
+                        <span class="review-num">5</span>
+                        <span class="review-text">等候時間長係最大問題，如果可以 App 落單就好了。飲品品質沒有問題。</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 導師 AI 示範 Prompt -->
+            <div>
+                <div style="margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
+                    <span class="instructor-badge">👨‍🏫 導師示範（3 分鐘）</span>
+                    <span style="color: var(--text-secondary); font-size: 0.88rem;">將評論 paste 入 AI，展示非結構化 → 結構化分析</span>
+                </div>
+                <div class="prompt-card">
+                    <div class="prompt-card-header" style="background: var(--p1);">
+                        <div class="prompt-card-title">🔍 示範 Prompt：評論分類分析</div>
+                        <span class="prompt-card-tag">導師展示用</span>
+                    </div>
+                    <div class="prompt-body">
+                        <div class="prompt-preview" id="prev-demo">點擊下方「查看指令」預覽完整 Prompt ▼</div>
+                        <div class="prompt-text" id="text-demo">以下是我的奶茶店的顧客評論，請將每條分類為【正面/負面/建議】，並總結出最常被提及的 2 個問題。
+
+顧客評論：
+1. 珍珠奶茶真的好飲！但等了 20 分鐘才拿到，高峰期真係太慢。
+2. 芝士奶蓋口味獨特，但甜度調節選擇太少，希望可以自選甜度。
+3. 環境乾淨，職員態度好，但桌椅太少，要企係度飲。
+4. 燒仙草超好味！價錢合理，下次一定再來。不過停車位太難揾。
+5. 等候時間長係最大問題，如果可以 App 落單就好了。飲品品質沒有問題。
+
+請以表格形式輸出分類結果，然後寫出 2 個最常被提及的問題。</div>
+                    </div>
+                    <div class="prompt-actions">
+                        <button class="btn-toggle" onclick="togglePrompt('demo')">👁️ 查看指令</button>
+                        <button class="btn-copy" onclick="copyPrompt('demo')" style="background: var(--p1);">📋 複製示範 Prompt</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="learning-point">
+                <span class="icon">💡</span>
+                <p>學習點：商業數據分析的第一步，是把「雜亂的原始資料」變成「可以比較的結構化數字」。AI 就是這個轉化的工具。</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== PART 2 ===== -->
+    <section class="part-section" id="part2">
+        <div class="part-header p2-header">
+            <div class="part-badge">07-22 min</div>
+            <h2 class="part-title">Part 2：銷售數據分析 → 商業決策</h2>
+            <div class="part-concept">數據分析 + 業績洞察</div>
+        </div>
+        <div class="part-body">
+
+            <div class="explain-box" style="border-color: var(--p2);">
+                <h3>📖 導師講解（3 分鐘）</h3>
+                <p>「銷售數據是最直接的商業數據，但一堆數字不會自己告訴你答案。」</p>
+                <p style="margin-top: 8px;">數據分析師問的三個問題：</p>
+                <ul style="margin-top: 6px;">
+                    <li><strong>趨勢是什麼？</strong>（整體走向）</li>
+                    <li><strong>問題在哪裡？</strong>（表現差的地方）</li>
+                    <li><strong>機會在哪裡？</strong>（可以發力的地方）</li>
+                </ul>
+                <p style="margin-top: 10px; color: #2563eb; font-weight: 600;">📤 Zoom Chat 發放 CSV 下載連結（goose_mama_sales.csv）</p>
+            </div>
+
+            <!-- 銷售數據表 -->
+            <div class="data-section">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                    <h3 style="margin:0;">📊 鵝媽媽奶茶 · 銷售數據 CSV（9–10月，共305行）</h3>
+                    <a href="goose_mama_sales.csv" download style="background:#10b981; color:white; font-size:0.78rem; font-weight:700; padding:5px 14px; border-radius:20px; text-decoration:none; white-space:nowrap;">⬇ 下載 CSV</a>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>日期</th>
+                                <th>產品名稱</th>
+                                <th>氣溫 (°C)</th>
+                                <th>考試週</th>
+                                <th>售價 (HK$)</th>
+                                <th>銷量</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>2025-09-01</td><td>🧋 珍珠奶茶</td><td>32</td><td>否</td><td>$32</td><td>48</td></tr>
+                            <tr><td>2025-09-01</td><td>🧀 芝士奶蓋</td><td>32</td><td>否</td><td>$45</td><td>21</td></tr>
+                            <tr><td>2025-09-01</td><td>🌿 燒仙草</td><td>32</td><td>否</td><td>$38</td><td>29</td></tr>
+                            <tr><td>2025-09-01</td><td>🫧 手工梳打</td><td>32</td><td>否</td><td>$28</td><td>14</td></tr>
+                            <tr><td>2025-09-01</td><td>🍵 純茶</td><td>32</td><td>否</td><td>$22</td><td>7</td></tr>
+                            <tr><td colspan="6" style="text-align:center; color:#94a3b8; font-style:italic; padding:8px;">… 共 305 行記錄（9月1日 至 10月31日）…</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p style="font-size:0.8rem; color:#64748b; margin-top:8px;">欄位：日期 / 產品名稱 / 氣溫_攝氏 / 是否考試週 / 售價_港幣 / 銷量</p>
+            </div>
+
+            <!-- Prompt 1 -->
+            <div>
+                <div style="margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
+                    <span class="student-badge">🙋 學生 DIY（12 分鐘）</span>
+                    <span style="color: var(--text-secondary); font-size: 0.88rem;">複製銷售數據 + Prompt → 貼入 AI</span>
+                </div>
+                <div class="prompt-card">
+                    <div class="prompt-card-header ph-p2">
+                        <div class="prompt-card-title">📊 Prompt 1：銷售數據分析</div>
+                        <span class="prompt-card-tag">07 min 發出</span>
+                    </div>
+                    <div class="prompt-body">
+                        <div class="prompt-preview" id="prev-p1">點擊下方「查看指令」預覽完整 Prompt ▼</div>
+                        <div class="prompt-text" id="text-p1">我是「鵝媽媽奶茶」的老闆。我已上傳一份銷售數據 CSV 檔案，包含 2025年9至10月的每日銷售記錄，欄位如下：
+- 日期：每日日期
+- 產品名稱：珍珠奶茶、芝士奶蓋、燒仙草、手工梳打、純茶
+- 氣溫_攝氏：當日氣溫
+- 是否考試週：是／否
+- 售價_港幣：各產品售價
+- 銷量：當日銷售杯數
+
+請分析這份數據：
+1. 哪款產品整體銷量最高？哪款最低？請計算每款產品的兩個月總收入並排名。
+2. 氣溫對銷量是否有明顯影響？請找出規律（例如氣溫越高，哪款產品銷量更佳）。
+3. 考試週期間，各產品銷量與非考試週相比有何分別？請作出比較。
+4. 根據以上分析，請給我 2 個可在下個月提升收入的具體行動建議。</div>
+                    </div>
+                    <div class="prompt-actions">
+                        <button class="btn-toggle" onclick="togglePrompt('p1')">👁️ 查看指令</button>
+                        <button class="btn-copy p2-btn" onclick="copyPrompt('p1')">📋 複製 Prompt 1</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="learning-point">
+                <span class="icon">💡</span>
+                <p>學習點：數字本身沒有意義，AI 的「分析 + 建議」才是商業價值。把數據變成決策——這就是數據分析師的核心工作。</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== PART 3 ===== -->
+    <section class="part-section" id="part3">
+        <div class="part-header p3-header">
+            <div class="part-badge">22-35 min</div>
+            <h2 class="part-title">Part 3：顧客數據採集 → 個性化策略</h2>
+            <div class="part-concept">Lead Capture + Customer Persona</div>
+        </div>
+        <div class="part-body">
+
+            <div class="explain-box" style="border-color: var(--p3);">
+                <h3>📖 導師講解（3 分鐘）</h3>
+                <p>「我們知道賣了什麼，但不知道買的人是誰、為什麼買。」</p>
+                <p style="margin-top: 8px;"><strong>顧客數據 (Customer Data)</strong> = 企業最有價值的資產之一</p>
+                <p style="margin-top: 8px;">漏斗模型：陌生人 → 顧客 → 回頭客，每個階段需要不同的數據</p>
+                <ul style="margin-top: 6px;">
+                    <li>陌生人：他們是誰？住哪裡？</li>
+                    <li>顧客：為什麼選這裡？買了什麼？</li>
+                    <li>回頭客：是什麼令他們再來？又是什麼令他們不再來？</li>
+                </ul>
+                <p style="margin-top: 10px; color: #059669; font-weight: 600;">📤 Zoom Chat 發放 CSV 下載連結（reviews.csv）+ Prompt 2</p>
+            </div>
+
+            <!-- Prompt 2 -->
+            <div>
+                <div style="margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
+                    <span class="student-badge">🙋 學生 DIY（10 分鐘）</span>
+                    <span style="color: var(--text-secondary); font-size: 0.88rem;">兩個任務：設計問卷 + 建立顧客畫像</span>
+                </div>
+                <div class="prompt-card">
+                    <div class="prompt-card-header ph-p3">
+                        <div class="prompt-card-title">🎯 Prompt 2：顧客數據採集 + Persona</div>
+                        <span class="prompt-card-tag">22 min 發出</span>
+                    </div>
+                    <div class="prompt-body">
+                        <div class="prompt-preview" id="prev-p2">點擊下方「查看指令」預覽完整 Prompt ▼</div>
+                        <div class="prompt-text" id="text-p2">我是「鵝媽媽奶茶」的老闆。我已上傳一份顧客評論 CSV 檔案，包含 50 條真實顧客評論，欄位為：評論編號、評論內容。
+
+請分析這份評論數據：
+1. 哪幾款產品最受顧客歡迎？請列出提及次數最多的 3 款，並引用評論說明原因。
+2. 顧客最常見的投訴是什麼？這個問題如何影響生意銷售？請引用具體評論支持你的分析。
+3. 根據評論內容，建立 2 個顧客畫像（Customer Persona），每個畫像需包含：
+   - 基本特徵（年齡、身份、消費習慣）
+   - 最在意的事情
+   - 針對這個畫像的 1 個推廣建議</div>
+                    </div>
+                    <div class="prompt-actions">
+                        <button class="btn-toggle" onclick="togglePrompt('p2')">👁️ 查看指令</button>
+                        <button class="btn-copy p3-btn" onclick="copyPrompt('p2')">📋 複製 Prompt 2</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="learning-point">
+                <span class="icon">💡</span>
+                <p>學習點：採集數據必須有目的，每個問題對應一個商業決策。數據 → 畫像 → 個性化策略 = 現代商業的標準流程。</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== PART 4A ===== -->
+    <section class="part-section" id="part4a">
+        <div class="part-header p4a-header">
+            <div class="part-badge">35-43 min</div>
+            <h2 class="part-title">Part 4A：商業 Gap Analysis</h2>
+            <div class="part-concept">差距分析框架</div>
+        </div>
+        <div class="part-body">
+
+            <div class="explain-box" style="border-color: var(--p4a);">
+                <h3>📖 導師講解（3 分鐘）</h3>
+                <p>引入 <strong>Gap Analysis（差距分析）</strong>：商業最常用的決策框架</p>
+                <p style="margin-top: 10px;"><strong>框架：現況 → 目標 → 差距 → 行動</strong></p>
+                <p style="margin-top: 8px;">例子：「老闆下個月目標 $200,000，但現在每月只有約 $30,000–40,000。差距有多大——AI 幫你算。」</p>
+
+                <!-- 框架視覺化 -->
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 14px;">
+                    <div style="background: #fef3c7; border-radius: 8px; padding: 10px; text-align: center;">
+                        <div style="font-size: 1.2rem;">📍</div>
+                        <div style="font-size: 0.78rem; font-weight: 700; color: #92400e; margin-top: 4px;">現況<br>Current State</div>
+                        <div style="font-size: 0.82rem; color: #78350f; margin-top: 4px;">AI 計算</div>
+                    </div>
+                    <div style="background: #d1fae5; border-radius: 8px; padding: 10px; text-align: center;">
+                        <div style="font-size: 1.2rem;">🎯</div>
+                        <div style="font-size: 0.78rem; font-weight: 700; color: #065f46; margin-top: 4px;">目標<br>Target / KPI</div>
+                        <div style="font-size: 0.82rem; color: #064e3b; margin-top: 4px;">$200,000</div>
+                    </div>
+                    <div style="background: #fee2e2; border-radius: 8px; padding: 10px; text-align: center;">
+                        <div style="font-size: 1.2rem;">⚡</div>
+                        <div style="font-size: 0.78rem; font-weight: 700; color: #991b1b; margin-top: 4px;">差距<br>Gap</div>
+                        <div style="font-size: 0.82rem; color: #7f1d1d; margin-top: 4px;">AI 計算</div>
+                    </div>
+                    <div style="background: #ede9fe; border-radius: 8px; padding: 10px; text-align: center;">
+                        <div style="font-size: 1.2rem;">🚀</div>
+                        <div style="font-size: 0.78rem; font-weight: 700; color: #5b21b6; margin-top: 4px;">行動<br>Action Items</div>
+                        <div style="font-size: 0.82rem; color: #4c1d95; margin-top: 4px;">策略方案</div>
+                    </div>
+                </div>
+
+                <p style="margin-top: 12px; color: #b45309; font-weight: 600;">📤 Zoom Chat 發放 Prompt 3A（導師展示用，需先上傳銷售 CSV）</p>
+            </div>
+
+            <!-- Prompt 3A -->
+            <div>
+                <div style="margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
+                    <span class="instructor-badge">👨‍🏫 導師示範（5 分鐘）</span>
+                    <span style="color: var(--text-secondary); font-size: 0.88rem;">示範商業 Gap Analysis 的輸出格式</span>
+                </div>
+                <div class="prompt-card">
+                    <div class="prompt-card-header ph-p4a">
+                        <div class="prompt-card-title">📈 Prompt 3A：奶茶店 Gap Analysis</div>
+                        <span class="prompt-card-tag">導師展示用</span>
+                    </div>
+                    <div class="prompt-body">
+                        <div class="prompt-preview" id="prev-p3a">點擊下方「查看指令」預覽完整 Prompt ▼</div>
+                        <div class="prompt-text" id="text-p3a">我是「鵝媽媽奶茶」的老闆。我已上傳銷售數據 CSV 檔案（與任務一相同的檔案）。
+
+第一步——請根據 CSV 數據計算以下現況指標：
+- 最近一個月（10月）的總銷售收入
+- 10月平均每日銷售杯數
+- 銷量最高與最低的產品
+
+第二步——請進行差距分析（Gap Analysis）：
+- 目標：下個月銷售額達到 $200,000
+- 根據你計算的現況收入，找出差距金額
+
+第三步——請給我 3 個可以在 2 週內執行的行動方案，填補這個差距。每個方案需說明：
+1. 具體行動內容
+2. 預期可增加多少收入
+3. 需要什麼資源或成本
+
+請以清晰的商業報告格式輸出。</div>
+                    </div>
+                    <div class="prompt-actions">
+                        <button class="btn-toggle" onclick="togglePrompt('p3a')">👁️ 查看指令</button>
+                        <button class="btn-copy p4a-btn" onclick="copyPrompt('p3a')">📋 複製 Prompt 3A</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="learning-point">
+                <span class="icon">💡</span>
+                <p>Gap Analysis 的威力在於：它把模糊的「想做得更好」變成具體的「差距在哪裡、要做什麼」。這是商業決策的基本框架。</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== PART 4B ===== -->
+    <section class="part-section" id="part4b">
+        <div class="part-header p4b-header">
+            <div class="part-badge">43-56 min</div>
+            <h2 class="part-title">Part 4B：JUPAS Gap Analysis — 個人品牌策略</h2>
+            <div class="part-concept">商業框架 × 個人應用</div>
+        </div>
+        <div class="part-body">
+
+            <!-- 橋接講解 -->
+            <div style="background: linear-gradient(135deg, #fef2f2, #fff7ed); border: 2px solid #fecaca; border-radius: 12px; padding: var(--spacing-lg);">
+                <h3 style="font-size: 1rem; font-weight: 800; color: #991b1b; margin-bottom: var(--spacing-md);">🌉 導師橋接（2 分鐘）</h3>
+                <p style="color: #7f1d1d; font-weight: 600; font-size: 1rem; margin-bottom: var(--spacing-md);">
+                    「你啱啱幫奶茶店老闆做完差距分析——<br>
+                    但其實，<strong>你自己就是一個最重要的商業項目。</strong>」
+                </p>
+
+                <!-- 對照表 -->
+                <table class="compare-table">
+                    <thead>
+                        <tr>
+                            <th>商業概念</th>
+                            <th>你的 JUPAS 情況</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>現況 (Current State)</td>
+                            <td>你的預計 DSE 成績</td>
+                        </tr>
+                        <tr>
+                            <td>目標 (Target / KPI)</td>
+                            <td>心儀課程的 LQ 分數</td>
+                        </tr>
+                        <tr>
+                            <td>差距 (Gap)</td>
+                            <td>你需要追回的分數</td>
+                        </tr>
+                        <tr>
+                            <td>行動方案 (Action Items)</td>
+                            <td>具體的備考策略</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- JUPAS 參考課程表 -->
+            <div class="data-section" style="margin-top: 16px;">
+                <h3>📋 2025 JUPAS 參考課程（最佳 5 科計分）</h3>
+                <div style="overflow-x: auto; margin-top: 10px;">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>課程代號</th>
+                                <th>大學</th>
+                                <th>課程名稱</th>
+                                <th style="background:#7f1d1d;">LQ</th>
+                                <th>中位數</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="background:#eff6ff; font-weight:600;">
+                                <td style="color:#1d4ed8;">JS1019 ⭐</td>
+                                <td>香港城市大學</td>
+                                <td>工商管理（人工智能商業應用）</td>
+                                <td style="color:#9f1239; background:#fff5f5; font-weight:700;">21</td>
+                                <td>23</td>
+                            </tr>
+                            <tr>
+                                <td>JS1002</td>
+                                <td>香港城市大學</td>
+                                <td>工商管理（會計）</td>
+                                <td style="color:#9f1239; background:#fff5f5; font-weight:700;">21.5</td>
+                                <td>22</td>
+                            </tr>
+                            <tr>
+                                <td>JS1007</td>
+                                <td>香港城市大學</td>
+                                <td>工商管理（市場學）</td>
+                                <td style="color:#9f1239; background:#fff5f5; font-weight:700;">23.5</td>
+                                <td>24.5</td>
+                            </tr>
+                            <tr>
+                                <td>JS7212</td>
+                                <td>嶺南大學</td>
+                                <td>工商管理（商業分析）</td>
+                                <td style="color:#9f1239; background:#fff5f5; font-weight:700;">25</td>
+                                <td>27</td>
+                            </tr>
+                            <tr>
+                                <td>6717</td>
+                                <td>香港大學</td>
+                                <td>社會科學</td>
+                                <td style="color:#9f1239; background:#fff5f5; font-weight:700;">29</td>
+                                <td>31</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p style="font-size:0.78rem; color:#64748b; margin-top:8px;">資料來源：2025 JUPAS 各大學收生資料 ｜ LQ = Lower Quartile（下四分位數）</p>
+            </div>
+
+            <!-- 虛構學生檔案 -->
+            <div class="profile-box">
+                <h3>👤 參考數據：虛構學生「阿明」（保護隱私，可選擇用自己真實數據）</h3>
+                <div class="profile-grid">
+                    <div class="profile-item">
+                        <label>預計 DSE 總分</label>
+                        <span>18 分（成績 3,3,4,4,4）</span>
+                    </div>
+                    <div class="profile-item">
+                        <label>目標課程</label>
+                        <span>城大 JS1019<br>工商管理（人工智能商業應用）</span>
+                    </div>
+                    <div class="profile-item">
+                        <label>目標課程去年 LQ</label>
+                        <span>21 分</span>
+                    </div>
+                    <div class="profile-item">
+                        <label>差距</label>
+                        <span>需追回 3 分</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Prompt 3B -->
+            <div>
+                <div style="margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
+                    <span class="student-badge">🙋 學生 DIY（11 分鐘）</span>
+                    <span style="color: var(--text-secondary); font-size: 0.88rem;">可用阿明的數據，或填入自己的真實情況</span>
+                </div>
+                <div class="prompt-card">
+                    <div class="prompt-card-header ph-p4b">
+                        <div class="prompt-card-title">🎓 Prompt 3B：JUPAS 個人差距分析</div>
+                        <span class="prompt-card-tag">43 min 發出</span>
+                    </div>
+                    <div class="prompt-body">
+                        <div class="prompt-preview" id="prev-p3b">點擊下方「查看指令」預覽完整 Prompt ▼</div>
+                        <div class="prompt-text" id="text-p3b">你是一位專業的學術數據分析顧問。
+
+我的現況數據：
+- 預計 DSE 最佳 5 科總分：18 分（中文 3、英文 3、數學 4、通識 4、選修 4）
+- 目標課程：香港城市大學 JS1019 工商管理（人工智能商業應用）
+- 目標課程 2025 年 LQ：21 分
+
+請以商業差距分析的格式，為我生成一份個人學術策略報告：
+
+1. 現況總結：用一句話說明我目前距離目標的處境
+2. 差距量化：具體指出差距有多少分，哪幾科最需要提升
+3. 行動方案：給我 3 個可以立即執行的具體策略，每個附上合理時間線
+
+請以清晰的報告格式輸出，要直接、數據為本。</div>
+                    </div>
+                    <div class="prompt-actions">
+                        <button class="btn-toggle" onclick="togglePrompt('p3b')">👁️ 查看指令</button>
+                        <button class="btn-copy p4b-btn" onclick="copyPrompt('p3b')">📋 複製 Prompt 3B</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="learning-point">
+                <span class="icon">💡</span>
+                <p>學習點：Gap Analysis 不只是商業工具，它是一種「用數據思考問題」的方式。懂這個框架，無論面對生意還是人生決策，你都能更清晰地行動。</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== PART 5 ===== -->
+    <section class="part-section" id="part5">
+        <div class="part-header p5-header">
+            <div class="part-badge">56-60 min</div>
+            <h2 class="part-title">Part 5：總結 — 數據決策循環</h2>
+            <div class="part-concept">Data-Driven Decision Making</div>
+        </div>
+        <div class="part-body">
+
+            <!-- 流程圖 -->
+            <div class="flow-diagram">
+                <div class="flow-node fn1">
+                    📥 原始數據<br>
+                    <span style="font-size: 0.8rem; font-weight: 400; color: var(--text-muted);">銷售記錄 + 顧客評論</span>
+                </div>
+                <div class="flow-arrow">↓</div>
+                <div class="flow-label">AI 分析</div>
+                <div class="flow-node fn2">
+                    📊 商業洞察<br>
+                    <span style="font-size: 0.8rem; font-weight: 400; color: var(--text-muted);">趨勢、問題、機會</span>
+                </div>
+                <div class="flow-arrow">↓</div>
+                <div class="flow-label">數據採集</div>
+                <div class="flow-node fn3">
+                    👥 顧客畫像<br>
+                    <span style="font-size: 0.8rem; font-weight: 400; color: var(--text-muted);">知道對象是誰</span>
+                </div>
+                <div class="flow-arrow">↓</div>
+                <div class="flow-label">Gap Analysis</div>
+                <div class="flow-node fn4">
+                    🎯 行動計劃<br>
+                    <span style="font-size: 0.8rem; font-weight: 400; color: var(--text-muted);">商業 + 個人（JUPAS）</span>
+                </div>
+                <div class="flow-arrow">↓</div>
+                <div class="flow-node fn5">
+                    ✅ 更好的決策<br>
+                    <span style="font-size: 0.8rem; font-weight: 400; color: var(--text-muted);">無論是做生意還是規劃自己</span>
+                </div>
+            </div>
+
+            <!-- 總結提問 -->
+            <div style="background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 10px; padding: var(--spacing-lg);">
+                <h3 style="font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #0369a1; margin-bottom: var(--spacing-md);">✅ 課堂驗收問題</h3>
+                <p style="color: #0c4a6e; font-size: 1rem; font-weight: 600; line-height: 1.7;">
+                    「Gap Analysis 係咩？我今日用它分析了哪兩個情況？」
+                </p>
+                <p style="color: #0369a1; font-size: 0.88rem; margin-top: 8px; line-height: 1.6;">
+                    能夠回答這條問題的學生，已理解「商業數據框架 → 個人決策應用」的完整概念。
+                </p>
+            </div>
+
+            <!-- 結語 -->
+            <div class="quote-box">
+                <p>「<strong>AI 不是替你做決定，而是幫你把數據變成你需要的答案。</strong><br>
+                今日你學到的，不只是工具，<br>
+                而是一種用數據思考的方式。」</p>
+            </div>
+
+        </div>
+    </section>
+
+</main>
+
+<!-- ========== Footer ========== -->
+<footer>
+    <p class="footer-hint">💡 點擊「查看指令」預覽，點擊「複製」即可貼入 ChatGPT / Gemini / Claude</p>
+    <div style="display: flex; align-items: center; justify-content: center; gap: 8px; color: var(--text-muted); font-size: 0.88rem; margin-top: 6px;">
+        <span>⌨️ 快捷鍵：</span>
+        <kbd class="kbd">1</kbd><span>Prompt 1</span>
+        <kbd class="kbd">2</kbd><span>Prompt 2</span>
+        <kbd class="kbd">3</kbd><span>Prompt 3A</span>
+        <kbd class="kbd">4</kbd><span>Prompt 3B</span>
+    </div>
+</footer>
+
+<!-- ========== Toast ========== -->
+<div id="toast" class="toast">
+    <span>✓</span>
+    <span id="toastMsg">已複製！請貼入 AI 視窗</span>
+</div>
+
+<!-- ========== Modal ========== -->
+<div id="modalOverlay" class="modal-overlay">
+    <div class="modal-content">
+        <h2 class="modal-title">⚠️ 請手動複製以下內容</h2>
+        <p style="color: var(--text-secondary); margin-bottom: var(--spacing-md); font-size: 0.9rem;">
+            自動複製無法使用。請按 <strong>Ctrl+A</strong> 全選，再按 <strong>Ctrl+C</strong> 複製：
+        </p>
+        <textarea id="modalTextarea" class="modal-textarea" readonly></textarea>
+        <div class="modal-btns">
+            <button class="modal-btn modal-btn-primary" onclick="closeModal()">我已複製</button>
+            <button class="modal-btn modal-btn-secondary" onclick="closeModal()">關閉</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ========== Prompt 數據 ==========
+    const prompts = {
+        'demo': document.getElementById('text-demo').textContent,
+        'p1':   document.getElementById('text-p1').textContent,
+        'p2':   document.getElementById('text-p2').textContent,
+        'p3a':  document.getElementById('text-p3a').textContent,
+        'p3b':  document.getElementById('text-p3b').textContent,
+    };
+
+    // ========== 展開/收起 Prompt ==========
+    function togglePrompt(id) {
+        const textEl = document.getElementById('text-' + id);
+        const prevEl = document.getElementById('prev-' + id);
+        const btn = event.currentTarget;
+
+        if (textEl.classList.contains('visible')) {
+            textEl.classList.remove('visible');
+            prevEl.style.display = 'block';
+            btn.innerHTML = '👁️ 查看指令';
+        } else {
+            textEl.classList.add('visible');
+            prevEl.style.display = 'none';
+            btn.innerHTML = '🔼 收起指令';
+        }
+    }
+
+    // ========== 複製功能 ==========
+    async function copyToClipboard(text) {
+        try {
+            await navigator.clipboard.writeText(text);
+            return true;
+        } catch (err) {
+            try {
+                const ta = document.createElement('textarea');
+                ta.value = text;
+                ta.style.cssText = 'position:fixed;opacity:0;top:0;left:0';
+                document.body.appendChild(ta);
+                ta.select();
+                const ok = document.execCommand('copy');
+                document.body.removeChild(ta);
+                if (ok) return true;
+                throw new Error('execCommand failed');
+            } catch (err2) {
+                showModal(text);
+                return false;
+            }
+        }
+    }
+
+    async function copyPrompt(id) {
+        const text = prompts[id];
+        if (!text) return;
+        const success = await copyToClipboard(text.trim());
+        if (success) {
+            const labels = {
+                demo: '示範 Prompt',
+                p1: 'Prompt 1',
+                p2: 'Prompt 2',
+                p3a: 'Prompt 3A',
+                p3b: 'Prompt 3B',
+            };
+            showToast('已複製「' + (labels[id] || id) + '」！請貼入 AI 視窗');
+        }
+    }
+
+    // ========== Toast ==========
+    function showToast(msg) {
+        const toast = document.getElementById('toast');
+        document.getElementById('toastMsg').textContent = msg;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    // ========== Modal ==========
+    function showModal(text) {
+        const overlay = document.getElementById('modalOverlay');
+        const ta = document.getElementById('modalTextarea');
+        ta.value = text;
+        overlay.classList.add('show');
+        setTimeout(() => { ta.select(); ta.focus(); }, 100);
+    }
+
+    function closeModal() {
+        document.getElementById('modalOverlay').classList.remove('show');
+    }
+
+    document.getElementById('modalOverlay').addEventListener('click', function(e) {
+        if (e.target === this) closeModal();
+    });
+
+    // ========== 鍵盤快捷鍵 ==========
+    const keyMap = { '1': 'p1', '2': 'p2', '3': 'p3a', '4': 'p3b' };
+    document.addEventListener('keydown', function(e) {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+        if (keyMap[e.key]) copyPrompt(keyMap[e.key]);
+    });
+
+    // 平滑滾動
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+        a.addEventListener('click', function(e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+    });
+</script>
+
+</body>
+</html>
