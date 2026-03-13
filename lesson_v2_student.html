@@ -665,6 +665,62 @@
             .card-top-title { font-size: 1rem; }
             .profile-grid { grid-template-columns: 1fr 1fr; }
         }
+
+        /* ===== 任務鎖 ===== */
+        .task-lock {
+            padding: 40px 22px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+            text-align: center;
+            background: #f8fafc;
+        }
+        .lock-icon { font-size: 2.8rem; }
+        .lock-hint {
+            font-size: 0.92rem;
+            color: var(--sub);
+            line-height: 1.6;
+        }
+        .lock-input-row {
+            display: flex;
+            gap: 8px;
+            width: 100%;
+            max-width: 320px;
+        }
+        .lock-input {
+            flex: 1;
+            padding: 10px 14px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .lock-input:focus { border-color: #6366f1; }
+        .lock-btn {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: white;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: opacity 0.2s;
+        }
+        .lock-btn:hover { opacity: 0.88; }
+        .lock-error {
+            font-size: 0.85rem;
+            color: #ef4444;
+            font-weight: 600;
+            min-height: 1.2em;
+        }
+        @keyframes unlockFadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .unlock-anim { animation: unlockFadeIn 0.35s ease both; }
     </style>
 </head>
 
@@ -715,7 +771,16 @@
             <div class="card-top-title">銷售數據分析</div>
             <div class="card-top-concept">數據 → 決策</div>
         </div>
-        <div class="card-body">
+        <div class="task-lock" id="lock1">
+            <div class="lock-icon">🔒</div>
+            <div class="lock-hint">請等老師喺 Zoom Chat 發送密碼</div>
+            <div class="lock-input-row">
+                <input class="lock-input" type="password" id="pw1" placeholder="輸入密碼…" onkeydown="if(event.key==='Enter')unlock(1)">
+                <button class="lock-btn bc1" onclick="unlock(1)">解鎖</button>
+            </div>
+            <div class="lock-error" id="err1"></div>
+        </div>
+        <div class="card-body" id="body1" style="display:none">
 
             <div class="task-brief">
                 <div class="task-brief-icon">📋</div>
@@ -794,7 +859,16 @@
             <div class="card-top-title">顧客數據採集 + 畫像</div>
             <div class="card-top-concept">Customer Persona</div>
         </div>
-        <div class="card-body">
+        <div class="task-lock" id="lock2">
+            <div class="lock-icon">🔒</div>
+            <div class="lock-hint">請等老師喺 Zoom Chat 發送密碼</div>
+            <div class="lock-input-row">
+                <input class="lock-input" type="password" id="pw2" placeholder="輸入密碼…" onkeydown="if(event.key==='Enter')unlock(2)">
+                <button class="lock-btn bc2" onclick="unlock(2)">解鎖</button>
+            </div>
+            <div class="lock-error" id="err2"></div>
+        </div>
+        <div class="card-body" id="body2" style="display:none">
 
             <div class="task-brief">
                 <div class="task-brief-icon">🎯</div>
@@ -896,7 +970,16 @@
             <div class="card-top-title">商業 Gap Analysis</div>
             <div class="card-top-concept">差距分析框架</div>
         </div>
-        <div class="card-body">
+        <div class="task-lock" id="lock3">
+            <div class="lock-icon">🔒</div>
+            <div class="lock-hint">請等老師喺 Zoom Chat 發送密碼</div>
+            <div class="lock-input-row">
+                <input class="lock-input" type="password" id="pw3" placeholder="輸入密碼…" onkeydown="if(event.key==='Enter')unlock(3)">
+                <button class="lock-btn bc3" onclick="unlock(3)">解鎖</button>
+            </div>
+            <div class="lock-error" id="err3"></div>
+        </div>
+        <div class="card-body" id="body3" style="display:none">
 
             <div class="task-brief">
                 <div class="task-brief-icon">📈</div>
@@ -973,7 +1056,16 @@
             <div class="card-top-title">我的 JUPAS 差距分析</div>
             <div class="card-top-concept">同一框架 · 個人應用</div>
         </div>
-        <div class="card-body">
+        <div class="task-lock" id="lock4">
+            <div class="lock-icon">🔒</div>
+            <div class="lock-hint">請等老師喺 Zoom Chat 發送密碼</div>
+            <div class="lock-input-row">
+                <input class="lock-input" type="password" id="pw4" placeholder="輸入密碼…" onkeydown="if(event.key==='Enter')unlock(4)">
+                <button class="lock-btn bc4" onclick="unlock(4)">解鎖</button>
+            </div>
+            <div class="lock-error" id="err4"></div>
+        </div>
+        <div class="card-body" id="body4" style="display:none">
 
             <div class="task-brief">
                 <div class="task-brief-icon">🎓</div>
@@ -1126,7 +1218,16 @@
             <div class="card-top-title">數據驅動設計：用 Dreamina 將策略「落地」</div>
             <div class="card-top-concept">AI 圖像生成</div>
         </div>
-        <div class="card-body">
+        <div class="task-lock" id="lock5">
+            <div class="lock-icon">🔒</div>
+            <div class="lock-hint">請等老師喺 Zoom Chat 發送密碼</div>
+            <div class="lock-input-row">
+                <input class="lock-input" type="password" id="pw5" placeholder="輸入密碼…" onkeydown="if(event.key==='Enter')unlock(5)">
+                <button class="lock-btn bc5" onclick="unlock(5)">解鎖</button>
+            </div>
+            <div class="lock-error" id="err5"></div>
+        </div>
+        <div class="card-body" id="body5" style="display:none">
 
             <div class="task-brief">
                 <div class="task-brief-icon">🎨</div>
@@ -1257,6 +1358,31 @@
 </div>
 
 <script>
+    // ===== 密碼設定（老師可自行更改）=====
+    const PASSWORDS = {
+        1: 'data1',
+        2: 'review2',
+        3: 'gap3',
+        4: 'jupas4',
+        5: 'dream5'
+    };
+
+    function unlock(n) {
+        const input = document.getElementById('pw' + n);
+        const err   = document.getElementById('err' + n);
+        if (input.value.trim() === PASSWORDS[n]) {
+            document.getElementById('lock' + n).style.display = 'none';
+            const body = document.getElementById('body' + n);
+            body.style.display = 'flex';
+            body.classList.add('unlock-anim');
+            err.textContent = '';
+        } else {
+            err.textContent = '❌ 密碼錯誤，請再試';
+            input.value = '';
+            input.focus();
+        }
+    }
+
     // ===== 展開/收起 =====
     function togglePt(ptId, phId, btn) {
         const pt = document.getElementById(ptId);
