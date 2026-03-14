@@ -1318,7 +1318,16 @@
             <div class="card-top-title">進階數據挑戰</div>
             <div class="card-top-concept">自由探索</div>
         </div>
-        <div class="card-body">
+        <div class="task-lock" id="lock6">
+            <div class="lock-icon">🔒</div>
+            <div class="lock-hint">請等老師喺 Zoom Chat 發送密碼</div>
+            <div class="lock-input-row">
+                <input class="lock-input" type="password" id="pw6" placeholder="輸入密碼…" onkeydown="if(event.key==='Enter')unlock(6)">
+                <button class="lock-btn" style="background:#f59e0b;" onclick="unlock(6)">解鎖</button>
+            </div>
+            <div class="lock-error" id="err6"></div>
+        </div>
+        <div class="card-body" id="body6" style="display:none">
 
             <div class="task-brief">
                 <div class="task-brief-icon">🚀</div>
@@ -1495,7 +1504,8 @@
         2: 'review2',
         3: 'gap3',
         4: 'jupas4',
-        5: 'dream5'
+        5: 'dream5',
+        6: 'bonus6'
     };
 
     function unlock(n) {
