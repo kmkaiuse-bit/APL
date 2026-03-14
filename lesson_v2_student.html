@@ -760,6 +760,10 @@
         <span class="step-num">5</span>
         <span class="step-label">Dreamina 設計落地</span>
     </a>
+    <a class="step-pill" href="#taskbonus" style="background:#fef3c7; border-color:#f59e0b;">
+        <span class="step-num" style="background:#f59e0b; color:white;">⭐</span>
+        <span class="step-label" style="color:#b45309;">Bonus 挑戰</span>
+    </a>
 </nav>
 
 <main>
@@ -1302,6 +1306,133 @@
             <div class="tip">
                 <span class="tip-icon">💡</span>
                 <span class="tip-text">數據分析唔係終點——將洞察轉化成別人看得懂嘅視覺呈現，先係真正嘅影響力。今日你用 AI 圖像工具將策略「落地」，就係數據分析師最核心嘅技能之一。</span>
+            </div>
+
+        </div>
+    </article>
+
+    <!-- ===== BONUS ===== -->
+    <article class="task-card" id="taskbonus" style="border-color:#f59e0b;">
+        <div class="card-top" style="background: linear-gradient(135deg, #b45309, #f59e0b);">
+            <div class="task-num-badge">⭐ BONUS</div>
+            <div class="card-top-title">進階數據挑戰</div>
+            <div class="card-top-concept">自由探索</div>
+        </div>
+        <div class="card-body">
+
+            <div class="task-brief">
+                <div class="task-brief-icon">🚀</div>
+                <div class="task-brief-text">
+                    <strong>做完所有任務？試下呢份進階版數據！</strong><br>
+                    複雜版 CSV 有 <strong>610 行、22 個欄位</strong>，包括兩間分店、天氣濕度、外賣訂單、顧客評分等。
+                    <strong>唔需要用我提供嘅 Prompt</strong>——自己寫 prompt 問 AI，搵出你覺得有趣嘅規律。
+                </div>
+            </div>
+
+            <!-- 欄位說明 -->
+            <div class="data-block">
+                <div class="data-block-title" style="background:#fef3c7; color:#92400e;">📋 複雜版新增欄位（22 欄）</div>
+                <div style="background:white; padding:14px 16px; display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:8px; font-size:0.83rem;">
+                    <div style="background:#f8fafc; border-radius:6px; padding:8px 10px;"><strong>星期</strong> — 週一至週日</div>
+                    <div style="background:#f8fafc; border-radius:6px; padding:8px 10px;"><strong>分店</strong> — 校門口 / 圖書館旁</div>
+                    <div style="background:#f8fafc; border-radius:6px; padding:8px 10px;"><strong>濕度_百分比</strong> — 當日濕度</div>
+                    <div style="background:#f8fafc; border-radius:6px; padding:8px 10px;"><strong>是否落雨</strong> — 是／否</div>
+                    <div style="background:#f8fafc; border-radius:6px; padding:8px 10px;"><strong>是否公眾假期</strong> — 是／否</div>
+                    <div style="background:#f8fafc; border-radius:6px; padding:8px 10px;"><strong>是否有優惠</strong> — 是／否</div>
+                    <div style="background:#f8fafc; border-radius:6px; padding:8px 10px;"><strong>優惠類型</strong> — 無／學生折扣／買一送一…</div>
+                    <div style="background:#f8fafc; border-radius:6px; padding:8px 10px;"><strong>原材料成本_港幣</strong> — 每杯成本</div>
+                    <div style="background:#f8fafc; border-radius:6px; padding:8px 10px;"><strong>外賣訂單數</strong> — 外賣杯數</div>
+                    <div style="background:#f8fafc; border-radius:6px; padding:8px 10px;"><strong>堂食訂單數</strong> — 堂食杯數</div>
+                    <div style="background:#f8fafc; border-radius:6px; padding:8px 10px;"><strong>顧客評分</strong> — 3.0–5.0 分</div>
+                    <div style="background:#f8fafc; border-radius:6px; padding:8px 10px;"><strong>候客時間_分鐘</strong> — 平均等候時間</div>
+                    <div style="background:#f8fafc; border-radius:6px; padding:8px 10px;"><strong>員工數目</strong> — 當日人手</div>
+                    <div style="background:#f8fafc; border-radius:6px; padding:8px 10px;"><strong>廣告費用_港幣</strong> — 每日廣告投入</div>
+                    <div style="background:#f8fafc; border-radius:6px; padding:8px 10px;"><strong>新顧客比例_%</strong> — 新客佔比</div>
+                    <div style="background:#f8fafc; border-radius:6px; padding:8px 10px;"><strong>庫存補充量</strong> — 當日補貨數</div>
+                </div>
+                <div style="background:white; padding:8px 16px 14px; text-align:center;">
+                    <a href="goose_mama_sales_complex.csv" download style="background:#f59e0b; color:white; font-size:0.85rem; font-weight:700; padding:8px 20px; border-radius:20px; text-decoration:none;">⬇ 下載複雜版 CSV（610 行 × 22 欄）</a>
+                </div>
+            </div>
+
+            <!-- 3 條 Bonus 問題 -->
+            <div class="data-block">
+                <div class="data-block-title" style="background:#fef3c7; color:#92400e;">❓ 試下自己寫 Prompt 回答呢 3 條問題</div>
+                <div style="background:white; padding:16px 18px; display:flex; flex-direction:column; gap:12px; font-size:0.92rem;">
+                    <div style="display:flex; gap:12px; align-items:flex-start;">
+                        <span style="background:#f59e0b; color:white; font-weight:800; padding:3px 10px; border-radius:20px; font-size:0.8rem; flex-shrink:0;">Q1</span>
+                        <span>哪款飲品的總銷量最高？哪款最低？</span>
+                    </div>
+                    <div style="display:flex; gap:12px; align-items:flex-start;">
+                        <span style="background:#f59e0b; color:white; font-weight:800; padding:3px 10px; border-radius:20px; font-size:0.8rem; flex-shrink:0;">Q2</span>
+                        <span>考試週期間，銷量有沒有明顯變化？</span>
+                    </div>
+                    <div style="display:flex; gap:12px; align-items:flex-start;">
+                        <span style="background:#f59e0b; color:white; font-weight:800; padding:3px 10px; border-radius:20px; font-size:0.8rem; flex-shrink:0;">Q3</span>
+                        <span>校門口和圖書館旁，哪間分店生意更好？</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tip" style="background:#fffbeb; border-left-color:#f59e0b;">
+                <span class="tip-icon">💡</span>
+                <span class="tip-text">Prompt 寫得愈清晰，AI 嘅答案就愈有用。試下比較：「分析銷量」vs「計算每款產品喺考試週同非考試週嘅平均日銷量，並做比較」——有咩分別？</span>
+            </div>
+
+            <!-- ===== Task 2 Bonus：評論數據 ===== -->
+            <div style="margin-top:24px; padding-top:20px; border-top:2px dashed #f59e0b;">
+                <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+                    <span style="background:#f59e0b; color:white; font-weight:800; font-size:0.85rem; padding:4px 14px; border-radius:20px;">Task 2 進階</span>
+                    <span style="font-weight:700; font-size:1rem; color:#92400e;">顧客評論複雜版數據</span>
+                </div>
+
+                <div class="task-brief" style="margin-bottom:16px;">
+                    <div class="task-brief-icon">💬</div>
+                    <div class="task-brief-text">
+                        <strong>Task 2 嘅進階版！</strong><br>
+                        複雜版評論 CSV 有 <strong>100 條評論、10 個欄位</strong>，包括分店、產品、評分、等候時間、顧客類型等。
+                        <strong>自己寫 prompt</strong> 問 AI，搵出隱藏喺數據入面嘅規律。
+                    </div>
+                </div>
+
+                <!-- 欄位說明 -->
+                <div class="data-block">
+                    <div class="data-block-title" style="background:#fef3c7; color:#92400e;">📋 複雜版評論新增欄位（10 欄）</div>
+                    <div style="background:white; padding:14px 16px; display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:8px; font-size:0.83rem;">
+                        <div style="background:#f8fafc; border-radius:6px; padding:8px 10px;"><strong>評論編號</strong> — #01–#100</div>
+                        <div style="background:#f8fafc; border-radius:6px; padding:8px 10px;"><strong>日期</strong> — 2025-09 至 2025-10</div>
+                        <div style="background:#f8fafc; border-radius:6px; padding:8px 10px;"><strong>分店</strong> — 校門口 / 圖書館旁</div>
+                        <div style="background:#f8fafc; border-radius:6px; padding:8px 10px;"><strong>產品名稱</strong> — 五款飲品之一</div>
+                        <div style="background:#f8fafc; border-radius:6px; padding:8px 10px;"><strong>評分_星數</strong> — 1–5 星</div>
+                        <div style="background:#f8fafc; border-radius:6px; padding:8px 10px;"><strong>等候時間_分鐘</strong> — 3–45 分鐘</div>
+                        <div style="background:#f8fafc; border-radius:6px; padding:8px 10px;"><strong>顧客類型</strong> — 學生 / 教職員 / 外來客</div>
+                        <div style="background:#f8fafc; border-radius:6px; padding:8px 10px;"><strong>是否回頭客</strong> — 是 / 否</div>
+                        <div style="background:#f8fafc; border-radius:6px; padding:8px 10px;"><strong>是否考試週</strong> — 是 / 否</div>
+                        <div style="background:#f8fafc; border-radius:6px; padding:8px 10px;"><strong>評論內容</strong> — 顧客真實留言</div>
+                    </div>
+                    <div style="background:white; padding:8px 16px 14px; text-align:center;">
+                        <a href="reviews_complex.csv" download style="background:#f59e0b; color:white; font-size:0.85rem; font-weight:700; padding:8px 20px; border-radius:20px; text-decoration:none;">⬇ 下載複雜版評論 CSV（100 行 × 10 欄）</a>
+                    </div>
+                </div>
+
+                <!-- 3 條 Bonus 問題 -->
+                <div class="data-block">
+                    <div class="data-block-title" style="background:#fef3c7; color:#92400e;">❓ 試下自己寫 Prompt 回答呢 3 條問題</div>
+                    <div style="background:white; padding:16px 18px; display:flex; flex-direction:column; gap:12px; font-size:0.92rem;">
+                        <div style="display:flex; gap:12px; align-items:flex-start;">
+                            <span style="background:#f59e0b; color:white; font-weight:800; padding:3px 10px; border-radius:20px; font-size:0.8rem; flex-shrink:0;">Q1</span>
+                            <span>哪款產品收到最多負評（1–2 星）？</span>
+                        </div>
+                        <div style="display:flex; gap:12px; align-items:flex-start;">
+                            <span style="background:#f59e0b; color:white; font-weight:800; padding:3px 10px; border-radius:20px; font-size:0.8rem; flex-shrink:0;">Q2</span>
+                            <span>等候時間同評分有冇關係？</span>
+                        </div>
+                        <div style="display:flex; gap:12px; align-items:flex-start;">
+                            <span style="background:#f59e0b; color:white; font-weight:800; padding:3px 10px; border-radius:20px; font-size:0.8rem; flex-shrink:0;">Q3</span>
+                            <span>回頭客同新客，對產品嘅評價有冇分別？</span>
+                        </div>
+                    </div>
+                </div>
             </div>
 
         </div>
