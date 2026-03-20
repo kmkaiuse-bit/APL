@@ -721,6 +721,118 @@
             to   { opacity: 1; transform: translateY(0); }
         }
         .unlock-anim { animation: unlockFadeIn 0.35s ease both; }
+
+        /* ── MC Question Block ── */
+        .mc-block {
+          margin-top: 24px;
+          border-radius: 12px;
+          border: 1.5px solid var(--mc-color, #6366f1);
+          background: #f8faff;
+          padding: 18px 20px 16px;
+        }
+        .mc-header-badge {
+          display: inline-block;
+          font-size: 0.75rem;
+          font-weight: 700;
+          letter-spacing: 0.05em;
+          color: var(--mc-color, #6366f1);
+          background: color-mix(in srgb, var(--mc-color, #6366f1) 10%, white);
+          border-radius: 99px;
+          padding: 3px 10px;
+          margin-bottom: 10px;
+        }
+        .mc-q {
+          font-size: 0.95rem;
+          font-weight: 600;
+          color: #1a202c;
+          line-height: 1.5;
+          margin-bottom: 12px;
+        }
+        .mc-options { display: flex; flex-direction: column; gap: 8px; }
+        .mc-opt {
+          text-align: left;
+          background: white;
+          border: 1.5px solid #e2e8f0;
+          border-radius: 8px;
+          padding: 10px 14px;
+          font-size: 0.88rem;
+          cursor: pointer;
+          transition: border-color 0.15s, background 0.15s;
+          line-height: 1.45;
+          font-family: inherit;
+        }
+        .mc-opt:not(:disabled):hover {
+          border-color: var(--mc-color, #6366f1);
+          background: color-mix(in srgb, var(--mc-color, #6366f1) 6%, white);
+        }
+        .mc-opt:disabled { cursor: default; }
+        .mc-opt.mc-opt-correct {
+          border-color: #10b981;
+          background: #ecfdf5;
+          color: #065f46;
+          font-weight: 600;
+        }
+        .mc-opt.mc-opt-wrong {
+          border-color: #ef4444;
+          background: #fef2f2;
+          color: #991b1b;
+        }
+        .mc-feedback {
+          margin-top: 12px;
+          border-radius: 8px;
+          padding: 10px 14px;
+          font-size: 0.88rem;
+          line-height: 1.55;
+        }
+        .mc-feedback.mc-correct {
+          background: #ecfdf5;
+          border: 1px solid #6ee7b7;
+          color: #065f46;
+        }
+        .mc-feedback.mc-wrong {
+          background: #fef2f2;
+          border: 1px solid #fca5a5;
+          color: #991b1b;
+        }
+        .mc-retry {
+          margin-top: 8px;
+          display: inline-block;
+          background: white;
+          border: 1.5px solid #ef4444;
+          color: #ef4444;
+          border-radius: 6px;
+          padding: 4px 12px;
+          font-size: 0.83rem;
+          cursor: pointer;
+          font-family: inherit;
+        }
+        .mc-retry:hover { background: #fef2f2; }
+        .mc-c1 { --mc-color: var(--c1); }
+        .mc-c2 { --mc-color: var(--c2); }
+        .mc-c3 { --mc-color: var(--c3); }
+        .mc-c4 { --mc-color: var(--c4); }
+        .mc-c5 { --mc-color: var(--c5); }
+        .mc-cbonus { --mc-color: #f59e0b; }
+        .mc-outro {
+          --mc-color: #fbbf24;
+          background: rgba(255,255,255,0.05);
+          border-color: rgba(251,191,36,0.4);
+          text-align: left;
+        }
+        .mc-outro .mc-header-badge {
+          color: #fde68a;
+          background: rgba(251,191,36,0.15);
+        }
+        .mc-outro .mc-q { color: white; }
+        .mc-outro .mc-opt {
+          background: rgba(255,255,255,0.07);
+          border-color: rgba(255,255,255,0.15);
+          color: rgba(255,255,255,0.9);
+        }
+        .mc-outro .mc-opt:not(:disabled):hover {
+          border-color: #fbbf24;
+          background: rgba(251,191,36,0.12);
+        }
     </style>
 </head>
 
@@ -853,6 +965,18 @@
                 <span class="tip-text">數字本身沒有意義——AI 的分析和建議才是商業價值。把數據變成決策，這就是數據分析師的核心工作。</span>
             </div>
 
+            <div class="mc-block mc-c1">
+                <div class="mc-header-badge">✏️ 知識確認</div>
+                <div class="mc-q">如果數據顯示「考試週」期間某商品銷量上升 30%，作為商家你應該？</div>
+                <div class="mc-options" id="mc1-opts">
+                    <button class="mc-opt" data-opt="A" onclick="checkMC(1,'A')">A. 在考試週期間臨時加派員工，以應對可能增加的人流</button>
+                    <button class="mc-opt" data-opt="B" onclick="checkMC(1,'B')">B. 在下一個考試週前提前增加該商品的備貨量</button>
+                    <button class="mc-opt" data-opt="C" onclick="checkMC(1,'C')">C. 在考試週期間推出限時折扣，刺激更多銷售</button>
+                    <button class="mc-opt" data-opt="D" onclick="checkMC(1,'D')">D. 先等多幾個考試週確認規律，才調整備貨決策</button>
+                </div>
+                <div class="mc-feedback" id="mc1-fb" style="display:none;"></div>
+            </div>
+
         </div>
     </article>
 
@@ -964,6 +1088,18 @@
                 <span class="tip-text">顧客評論係非結構化數據——AI 幫你快速提煉出規律。留意哪款最多人讚、出單慢點樣令客人流失，呢兩個洞察係任務 3 Gap Analysis 嘅重要依據。</span>
             </div>
 
+            <div class="mc-block mc-c2">
+                <div class="mc-header-badge">✏️ 知識確認</div>
+                <div class="mc-q">建立「顧客畫像」(Customer Persona) 的主要目的是什麼？</div>
+                <div class="mc-options" id="mc2-opts">
+                    <button class="mc-opt" data-opt="A" onclick="checkMC(2,'A')">A. 統計不同年齡層顧客的消費金額和頻率</button>
+                    <button class="mc-opt" data-opt="B" onclick="checkMC(2,'B')">B. 聚焦目標顧客的需求和行為，制定更精準的策略</button>
+                    <button class="mc-opt" data-opt="C" onclick="checkMC(2,'C')">C. 收集顧客聯絡資料，方便推送個人化優惠</button>
+                    <button class="mc-opt" data-opt="D" onclick="checkMC(2,'D')">D. 找出最多顧客購買的產品，優化菜單設計</button>
+                </div>
+                <div class="mc-feedback" id="mc2-fb" style="display:none;"></div>
+            </div>
+
         </div>
     </article>
 
@@ -1048,6 +1184,18 @@
             <div class="tip">
                 <span class="tip-icon">💡</span>
                 <span class="tip-text">Gap Analysis 把模糊的「想做得更好」變成具體的「差距在哪裡、要做什麼」。記住這個框架——任務 4 你會再用一次。</span>
+            </div>
+
+            <div class="mc-block mc-c3">
+                <div class="mc-header-badge">✏️ 知識確認</div>
+                <div class="mc-q">Gap Analysis 中的「Gap（差距）」是指什麼？</div>
+                <div class="mc-options" id="mc3-opts">
+                    <button class="mc-opt" data-opt="A" onclick="checkMC(3,'A')">A. 現有產品功能與競爭對手之間的能力差距</button>
+                    <button class="mc-opt" data-opt="B" onclick="checkMC(3,'B')">B. 現況（As-Is）與目標（To-Be）之間的差距</button>
+                    <button class="mc-opt" data-opt="C" onclick="checkMC(3,'C')">C. 上一季與今季之間的業績差距</button>
+                    <button class="mc-opt" data-opt="D" onclick="checkMC(3,'D')">D. 顧客期望與實際服務水平之間的落差</button>
+                </div>
+                <div class="mc-feedback" id="mc3-fb" style="display:none;"></div>
             </div>
 
         </div>
@@ -1212,6 +1360,18 @@
                 <span class="tip-text">Gap Analysis 不只是商業工具——它是一種用數據思考問題的方式。無論面對生意還是人生決策，這個框架都能幫你更清晰地行動。</span>
             </div>
 
+            <div class="mc-block mc-c4">
+                <div class="mc-header-badge">✏️ 知識確認</div>
+                <div class="mc-q">將 Gap Analysis 應用在 JUPAS 規劃時，「To-Be（目標狀態）」代表什麼？</div>
+                <div class="mc-options" id="mc4-opts">
+                    <button class="mc-opt" data-opt="A" onclick="checkMC(4,'A')">A. 你最近一次 DSE 模擬試的整體成績</button>
+                    <button class="mc-opt" data-opt="B" onclick="checkMC(4,'B')">B. 你理想大學課程的最低入學要求</button>
+                    <button class="mc-opt" data-opt="C" onclick="checkMC(4,'C')">C. 你為自己訂立的 DSE 最終目標分數</button>
+                    <button class="mc-opt" data-opt="D" onclick="checkMC(4,'D')">D. 升學顧問建議你申請的課程範圍</button>
+                </div>
+                <div class="mc-feedback" id="mc4-fb" style="display:none;"></div>
+            </div>
+
         </div>
     </article>
 
@@ -1306,6 +1466,18 @@
             <div class="tip">
                 <span class="tip-icon">💡</span>
                 <span class="tip-text">數據分析唔係終點——將洞察轉化成別人看得懂嘅視覺呈現，先係真正嘅影響力。今日你用 AI 圖像工具將策略「落地」，就係數據分析師最核心嘅技能之一。</span>
+            </div>
+
+            <div class="mc-block mc-c5">
+                <div class="mc-header-badge">✏️ 知識確認</div>
+                <div class="mc-q">「數據驅動設計」（Data-Driven Design）的正確流程是？</div>
+                <div class="mc-options" id="mc5-opts">
+                    <button class="mc-opt" data-opt="A" onclick="checkMC(5,'A')">A. 先完成設計初稿，再收集顧客數據驗證效果</button>
+                    <button class="mc-opt" data-opt="B" onclick="checkMC(5,'B')">B. 先分析數據洞察（顧客是誰、需求是什麼），再以洞察指導設計決策</button>
+                    <button class="mc-opt" data-opt="C" onclick="checkMC(5,'C')">C. 先進行問卷調查，收集顧客意見，再按多數意見設計</button>
+                    <button class="mc-opt" data-opt="D" onclick="checkMC(5,'D')">D. 先定義品牌視覺規範，再分析數據確認設計方向是否一致</button>
+                </div>
+                <div class="mc-feedback" id="mc5-fb" style="display:none;"></div>
             </div>
 
         </div>
@@ -1444,6 +1616,18 @@
                 </div>
             </div>
 
+            <div class="mc-block mc-cbonus">
+                <div class="mc-header-badge">✏️ 知識確認</div>
+                <div class="mc-q">面對大量數據時，最重要的第一步是什麼？</div>
+                <div class="mc-options" id="mc6-opts">
+                    <button class="mc-opt" data-opt="A" onclick="checkMC(6,'A')">A. 先清洗數據，移除重複、缺漏和錯誤的記錄</button>
+                    <button class="mc-opt" data-opt="B" onclick="checkMC(6,'B')">B. 先明確業務問題和分析目標</button>
+                    <button class="mc-opt" data-opt="C" onclick="checkMC(6,'C')">C. 先整理數據結構，了解有哪些欄位和變量</button>
+                    <button class="mc-opt" data-opt="D" onclick="checkMC(6,'D')">D. 先計算基本統計摘要（平均數、中位數、最大最小值）</button>
+                </div>
+                <div class="mc-feedback" id="mc6-fb" style="display:none;"></div>
+            </div>
+
         </div>
     </article>
 
@@ -1473,6 +1657,42 @@
         <div class="verify-box">
             <p>課堂結束問題：</p>
             <div class="verify-q">「Gap Analysis 係咩？我今日用它分析了哪兩個情況？數據洞察點樣透過設計『落地』？」</div>
+        </div>
+
+        <div class="mc-block mc-outro">
+            <div class="mc-header-badge">✏️ 課堂總結問題</div>
+            <div class="mc-q">數據分析師的最終目標是什麼？</div>
+            <div class="mc-options" id="mc7-opts">
+                <button class="mc-opt" data-opt="A" onclick="checkMC(7,'A')">A. 建立準確的預測模型，提升數據分析精度</button>
+                <button class="mc-opt" data-opt="B" onclick="checkMC(7,'B')">B. 將數據轉化為可行動的商業決策</button>
+                <button class="mc-opt" data-opt="C" onclick="checkMC(7,'C')">C. 透過視覺化圖表，清晰呈現業務數據現況</button>
+                <button class="mc-opt" data-opt="D" onclick="checkMC(7,'D')">D. 找出數據規律和趨勢，撰寫詳盡的分析報告</button>
+            </div>
+            <div class="mc-feedback" id="mc7-fb" style="display:none;"></div>
+        </div>
+
+        <div class="mc-block mc-outro">
+            <div class="mc-header-badge">✏️ 課堂總結問題</div>
+            <div class="mc-q">今日你用 Gap Analysis 分析了哪兩個情況？</div>
+            <div class="mc-options" id="mc8-opts">
+                <button class="mc-opt" data-opt="A" onclick="checkMC(8,'A')">A. 鵝媽媽奶茶的銷售趨勢 vs 顧客評論分析</button>
+                <button class="mc-opt" data-opt="B" onclick="checkMC(8,'B')">B. 鵝媽媽奶茶的業務差距 vs 自己的 JUPAS 升學差距</button>
+                <button class="mc-opt" data-opt="C" onclick="checkMC(8,'C')">C. 考試週備貨差距 vs 顧客等候時間差距</button>
+                <button class="mc-opt" data-opt="D" onclick="checkMC(8,'D')">D. 競爭對手差距 vs 品牌設計差距</button>
+            </div>
+            <div class="mc-feedback" id="mc8-fb" style="display:none;"></div>
+        </div>
+
+        <div class="mc-block mc-outro">
+            <div class="mc-header-badge">✏️ 課堂總結問題</div>
+            <div class="mc-q">數據洞察如何透過設計「落地」？</div>
+            <div class="mc-options" id="mc9-opts">
+                <button class="mc-opt" data-opt="A" onclick="checkMC(9,'A')">A. 將數據整理成表格，寫成分析報告提交</button>
+                <button class="mc-opt" data-opt="B" onclick="checkMC(9,'B')">B. 根據顧客畫像的洞察，生成針對目標顧客的視覺廣告</button>
+                <button class="mc-opt" data-opt="C" onclick="checkMC(9,'C')">C. 將數據分享給設計師，由他們自行決定設計方向</button>
+                <button class="mc-opt" data-opt="D" onclick="checkMC(9,'D')">D. 先設計多個版本，再用數據決定哪個版本最受歡迎</button>
+            </div>
+            <div class="mc-feedback" id="mc9-fb" style="display:none;"></div>
         </div>
     </div>
 
@@ -1601,6 +1821,53 @@
             document.querySelector(a.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth', block: 'start' });
         });
     });
+
+    // ===== MC Questions =====
+    const MC_ANSWERS = { 1:'B', 2:'B', 3:'B', 4:'B', 5:'B', 6:'B', 7:'B', 8:'B', 9:'B' };
+
+    const MC_EXPLAIN = {
+      1: '數據分析的核心是將數字轉化為行動。考試週銷量上升是有規律的數據信號，應主動利用這個洞察來優化備貨決策。',
+      2: '顧客畫像幫助商家從「所有人」聚焦到「目標顧客」，了解他們的需求、行為和痛點，從而制定更精準的策略。',
+      3: 'Gap Analysis 就是找出「現在在哪裡（As-Is）」與「想去哪裡（To-Be）」之間的差距，再制定行動計劃去填補這個 Gap。',
+      4: '在 JUPAS Gap Analysis 中，To-Be 是你的目標——即你理想課程的入學要求。了解 To-Be 才能計算出你需要努力的方向和幅度。',
+      5: '數據驅動設計的精髓是：先用數據理解「誰是你的顧客、他們需要什麼」，再讓這些洞察驅動創意決策，而不是純憑感覺設計。',
+      6: '數據分析最常見的錯誤是「為分析而分析」。先明確業務問題（如：為什麼銷量下跌？），才能有目標地選擇正確的分析方法和指標。',
+      7: '數據分析師的價值不在於掌握工具，而在於將數字轉化為決策。今日你走完整個循環：從原始數據到顧客畫像、Gap Analysis、再到視覺設計——每一步都是為了更好的行動。',
+      8: '今日你分別為鵝媽媽奶茶做商業 Gap Analysis（任務 3），以及為自己的 JUPAS 升學做個人 Gap Analysis（任務 4）——同一框架，兩個完全不同的應用場景。',
+      9: '「落地」是指將抽象洞察轉化為具體行動。今日你用顧客畫像（年齡、偏好）寫 Dreamina prompt，生成針對目標顧客的廣告圖——這就是數據洞察透過設計落地的完整示範。'
+    };
+
+    function checkMC(n, selected) {
+      const correct = MC_ANSWERS[n];
+      const opts = document.querySelectorAll('#mc' + n + '-opts .mc-opt');
+      const fb = document.getElementById('mc' + n + '-fb');
+      opts.forEach(btn => {
+        btn.disabled = true;
+        const letter = btn.getAttribute('data-opt');
+        if (selected === correct && letter === correct) btn.classList.add('mc-opt-correct');
+        else if (letter === selected) btn.classList.add('mc-opt-wrong');
+      });
+      fb.style.display = 'block';
+      if (selected === correct) {
+        fb.className = 'mc-feedback mc-correct';
+        fb.innerHTML = '✅ 答對了！' + MC_EXPLAIN[n];
+      } else {
+        fb.className = 'mc-feedback mc-wrong';
+        fb.innerHTML = '❌ 再想想！' + MC_EXPLAIN[n] +
+          '<br><button class="mc-retry" onclick="resetMC(' + n + ')">🔄 重試</button>';
+      }
+    }
+
+    function resetMC(n) {
+      const opts = document.querySelectorAll('#mc' + n + '-opts .mc-opt');
+      const fb = document.getElementById('mc' + n + '-fb');
+      opts.forEach(btn => {
+        btn.disabled = false;
+        btn.classList.remove('mc-opt-correct', 'mc-opt-wrong');
+      });
+      fb.style.display = 'none';
+      fb.className = 'mc-feedback';
+    }
 </script>
 
 </body>
